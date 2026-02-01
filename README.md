@@ -1,10 +1,10 @@
-# motioncoach.nvim
+# `motioncoach-nvim`
 
 motioncoach.nvim is a pure-Lua Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
 
 It is designed as a _coach_, not a linter: suggestions are contextual, rate-limited, undo-aware, and layered so beginners aren’t overwhelmed.
 
-All output is delivered via **`vim.notify`**.
+All output is delivered via a "wrapped" **`vim.notify`**.
 
 ---
 
@@ -60,7 +60,7 @@ Only **advanced mode** shows the formatted key history.
 
 ```lua
 {
-  "yourname/motioncoach-nvim",
+  "emo333/motioncoach-nvim",
   config = function()
     require("motioncoach-nvim").setup({
       coachingLevel = 1,
@@ -71,22 +71,19 @@ Only **advanced mode** shows the formatted key history.
 
 ## Commands
 
-- Commands are intentionally simple and stable:
+`:MotionCoachOff`
 
-  `:MotionCoachOff`
+`:MotionCoachBeginner`
 
-  `:MotionCoachBeginner`
+`:MotionCoachAdvanced`
 
-  `:MotionCoachAdvanced`
+`:MotionCoachToggle`
 
-:MotionCoachToggle
+`:MotionCoachLevel 0|1|2`
 
-:MotionCoachLevel 0|1|2
-
-Suggested Keymaps
+## Suggested Keymaps
 
 ```lua
-
 vim.keymap.set("n", "<leader>mc", function()
   require("motioncoach-nvim").toggle()
 end, { desc = "MotionCoach cycle level" })
@@ -106,12 +103,62 @@ end)
 
 ## Configuration
 
-motioncoach is configured via:
+`motioncoach-nvim` is configured via:
 
 ```lua
 require("motioncoach-nvim").setup({
   -- options
 })
+```
+
+### Notification Configuration (Optional)
+
+- either add this to your snacks.nvim configuration or;
+  add this as a plugin (eg. `snacks.lua`):
+
+```lua
+return {
+  {
+    "folke/snacks.nvim",
+    config = function(_, opts)
+      require("snacks").setup(opts)
+
+      local original_notify = Snacks.notifier.notify
+      ---@diagnostic disable-next-line: duplicate-set-field
+      Snacks.notifier.notify = function(msg, level, notify_opts)
+        notify_opts = notify_opts or {}
+
+        -- Custom logic: If msg has "Motion" in it, set timeout to 10 seconds
+        if msg:find("Motion") then
+          notify_opts.timeout = 10000
+        end
+
+        return original_notify(msg, level, notify_opts)
+      end
+    end,
+    opts = {
+      notifier = {
+        -- Set the maximum width for notifications before they wrap/expand
+        width = { min = 40, max = 0.4 }, -- max can be a percentage of screen width
+        -- Default is 3000ms (3 seconds)
+        -- timeout = 5000, -- Increase this value (in milliseconds)
+        -- Return true to keep the notification on screen
+        keep = function(notif)
+          local severity = vim.log.levels
+          return notif.level == severity.ERROR or notif.level == severity.WARN
+        end,
+      },
+      styles = {
+        notification = {
+          wo = {
+            wrap = true, -- Enable line wrapping for long messages
+          },
+        },
+      },
+    },
+  },
+}
+
 ```
 
 ## Privacy Defaults
@@ -134,59 +181,68 @@ By default, motioncoach:
 
 You can override these if you want:
 
+```lua
 require("motioncoach-nvim").setup({
 captureCommandLineKeys = false,
 captureInsertModeKeys = false,
 })
 
-Typed Keys Display (Advanced Only)
+```
 
-In advanced mode, notifications include:
+### Typed Keys Display (Advanced Only)
 
+- In advanced mode, notifications include:
+
+```
 You typed: j×12 w d i w
+```
 
-The formatter:
+### The formatter
 
-filters noise (<Plug>, mouse events, etc.)
+- filters noise (<Plug>, mouse events, etc.)
 
-collapses repeats (j×12)
+- collapses repeats (j×12)
 
-truncates long histories
+- truncates long histories
 
 Configure it like this:
 
+```lua
 require("motioncoach-nvim").setup({
-typedKeysFormatter = {
-maxTokens = 25,
-collapseRepeats = true,
-repeatMarker = "×",
-}
+  typedKeysFormatter = {
+    maxTokens = 25,
+    collapseRepeats = true,
+    repeatMarker = "×",
+  }
 })
+```
 
 ### Plugin Recommendations
 
-motioncoach can suggest plugins only after repeated evidence and only in advanced mode.
+`motioncoach.nvim` can suggest plugins only after repeated evidence and only in advanced mode.
 
-Recommendations are:
+- Recommendations are:
+  - Fully configurable
 
-Fully configurable
+  - Evidence-based
 
-Evidence-based
+  - Designed to evolve over time
 
-Designed to evolve over time
+#### Optional
 
-### Optional
+- Disable all plugin recommendations:
 
-Disable all plugin suggestions:
-
+```lua
 require("motioncoach-nvim").setup({
 pluginRecommendations = {
 enabled = false,
 }
 })
+```
 
-Disable a single recommendation:
+- Disable a single recommendation:
 
+```lua
 require("motioncoach-nvim").setup({
 pluginRecommendations = {
 items = {
@@ -194,11 +250,13 @@ surround = { enabled = false },
 }
 }
 })
+```
 
 ### Provider Hook (Recommended)
 
 For long-term evolution, you can supply a provider function that decides recommendations dynamically:
 
+```lua
 require("motioncoach-nvim").setup({
 pluginRecommendations = {
 provider = function(evidenceCounters, context)
@@ -210,8 +268,9 @@ return nil
 end
 }
 })
+```
 
-The provider runs before built-in defaults.
+- The provider runs before built-in defaults.
 
 ### Yank History
 
@@ -223,7 +282,7 @@ Yank contents are never displayed
 
 Yank contents never leave memory
 
-Design Notes
+## Design Notes
 
 Key logging is lightweight and deferred
 
@@ -235,11 +294,19 @@ Mappings and plugins may affect key visibility — state diffs are always prefer
 
 Suggestions are intentionally conservative
 
-Philosophy
+## Philosophy
 
-Teach the next better motion — not the perfect one.
+- Teach the next better motion — not the perfect one.
 
-motioncoach is meant to grow with you, not shame you, and once you got your Vim Motions down, remove it :)
+- `motioncoach-nvim` is meant to grow with you and once you got your Vim Motions down, remove it :)
+
+## About the Author (emo333)
+
+- I am not a professional programmer.
+- I have been programming most of my life;
+  either as side duties inherint to work or as hobby at home.
+- Vim/NeoVim/Lua are all new to me ( started delving into these around November 2025 ).
+- I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim Motions.
 
 ## License
 
