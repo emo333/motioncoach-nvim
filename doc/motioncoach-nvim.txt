@@ -1,0 +1,7 @@
+*motionscoach.nvim.txt*  For NVIM v0.8.0 Last change: 2026 January 31
+
+==============================================================================
+
+LICENSE MIT       *nvim-plugin-template.nvim-nvim-plugin-template-license-mit*
+
+vim:tw=78:ts=8:noet:ft=help:norl:
