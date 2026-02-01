@@ -73,6 +73,13 @@ local defaultConfig = {
   },
 }
 
+notificationWrap = {
+  enabled = true,
+  -- If nil, uses min(90, &columns - 10)
+  width = nil,
+  margin = 10, -- when using &columns
+}
+
 local activeConfig = vim.deepcopy(defaultConfig)
 
 function Config.get()

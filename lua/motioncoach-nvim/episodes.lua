@@ -10,12 +10,17 @@ local Advanced = require('motioncoach-nvim.suggestions.advanced')
 local Episodes = {}
 
 local function now_ms()
-  return math.floor(vim.loop.hrtime() / 1e6)
+  return math.floor(vim.uv.hrtime() / 1e6)
 end
 
+local Notify = require('motioncoach-nvim.notify')
+
 local function notify(message)
-  vim.notify('MotionCoach: ' .. message, Config.get().notifyLogLevel)
+  Notify.send('MotionCoach: ' .. message, Config.get().notifyLogLevel)
 end
+-- local function notify(message)
+--   vim.notify('MotionCoach: ' .. message, Config.get().notifyLogLevel)
+-- end
 
 local function get_line(bufferNumber, row1)
   return vim.api.nvim_buf_get_lines(bufferNumber, row1 - 1, row1, false)[1] or ''
