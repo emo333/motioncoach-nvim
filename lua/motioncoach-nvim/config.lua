@@ -2,7 +2,7 @@ local Config = {}
 
 local defaultConfig = {
   coachingLevel = 1,
-  notifyLogLevel = vim.log.levels.INFO,
+  notifyLogLevel = vim.log.levels.DEBUG,
 
   episodeGapMilliseconds = 700,
   minimumNaiveCostToCoach = 8,

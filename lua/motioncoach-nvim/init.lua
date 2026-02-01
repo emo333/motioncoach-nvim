@@ -1,9 +1,8 @@
 local Config = require('motioncoach-nvim.config')
-local State = require('motioncoach-nvim.state')
-local Keylog = require('motioncoach-nvim.keylog')
 local Episodes = require('motioncoach-nvim.episodes')
-
+local Keylog = require('motioncoach-nvim.keylog')
 local MotionCoachNvim = {}
+local State = require('motioncoach-nvim.state')
 
 function MotionCoachNvim.setup(userConfig)
   Config.apply(userConfig or {})

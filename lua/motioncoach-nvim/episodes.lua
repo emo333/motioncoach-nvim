@@ -1,26 +1,24 @@
-local Config = require('motioncoach-nvim.config')
-local State = require('motioncoach-nvim.state')
-local Keylog = require('motioncoach-nvim.keylog')
-local Formatter = require('motioncoach-nvim.formatter')
-local Registers = require('motioncoach-nvim.registers')
-
-local Beginner = require('motioncoach-nvim.suggestions.beginner')
+-- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
+-- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
 local Advanced = require('motioncoach-nvim.suggestions.advanced')
-
+local Beginner = require('motioncoach-nvim.suggestions.beginner')
+local Config = require('motioncoach-nvim.config')
 local Episodes = {}
+local Formatter = require('motioncoach-nvim.formatter')
+local Keylog = require('motioncoach-nvim.keylog')
+local Notify = require('motioncoach-nvim.notify')
+local Registers = require('motioncoach-nvim.registers')
+local State = require('motioncoach-nvim.state')
 
+---@return number ... current time in milliseconds
 local function now_ms()
   return math.floor(vim.uv.hrtime() / 1e6)
 end
 
-local Notify = require('motioncoach-nvim.notify')
-
+-- TODO: Need to handle this for other notifiers (plugins) besides snacks.notify
 local function notify(message)
   Notify.send('MotionCoach: ' .. message, Config.get().notifyLogLevel)
 end
--- local function notify(message)
---   vim.notify('MotionCoach: ' .. message, Config.get().notifyLogLevel)
--- end
 
 local function get_line(bufferNumber, row1)
   return vim.api.nvim_buf_get_lines(bufferNumber, row1 - 1, row1, false)[1] or ''
@@ -36,11 +34,12 @@ local function clampNumber(value, minimum, maximum)
   return value
 end
 
+---@return boolean ... Is mode n/v/V/<C-v>/o ?
 local function is_motion_mode(modeString)
   return modeString == 'n'
     or modeString == 'v'
     or modeString == 'V'
-    or modeString == '\22'
+    or modeString == '\22' -- <C-v>
     or modeString == 'o'
 end
 
@@ -166,6 +165,7 @@ local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   }
 end
 
+-- INFO: When Homie moves the cursor, do all this...
 local function on_cursor_moved()
   local config = Config.get()
   local runtimeState = State.get()
@@ -197,6 +197,10 @@ local function on_cursor_moved()
     return
   end
 
+  ---@class episode
+  ---@field bufferNumber number
+  ---@field to {}
+  ---@field timeToMs number
   local episode = runtimeState.currentEpisode
   if
     episode.bufferNumber ~= bufferNumber
