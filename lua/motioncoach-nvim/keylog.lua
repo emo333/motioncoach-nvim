@@ -7,38 +7,14 @@ local function now_ms()
   return math.floor(vim.loop.hrtime() / 1e6)
 end
 
-local function normalize_key(rawKeyBytes)
-  return vim.keytrans(rawKeyBytes)
-end
-
-local function should_capture_key(normalizedKeyToken)
-  local config = Config.get()
-  local currentMode = vim.api.nvim_get_mode().mode
-
-  if config.coachingLevel == 0 then
-    return false
-  end
-  if (not config.captureInsertModeKeys) and currentMode == 'i' then
-    return false
-  end
-  if (not config.captureCommandLineKeys) and currentMode == 'c' then
-    return false
-  end
-  if not normalizedKeyToken or normalizedKeyToken == '' then
-    return false
-  end
-
-  return true
-end
-
-local function ring_push(normalizedKeyToken)
+local function ring_push(token)
   local config = Config.get()
   local runtimeState = State.get()
 
   local timestamp = now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
 
-  runtimeState.keyRingBuffer[writeIndex] = { t = timestamp, k = normalizedKeyToken }
+  runtimeState.keyRingBuffer[writeIndex] = { t = timestamp, k = token }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
 end
@@ -77,10 +53,19 @@ function Keylog.install_if_needed()
   runtimeState.onKeyHookInstalled = true
 
   vim.on_key(function(rawKeyBytes)
-    local normalized = normalize_key(rawKeyBytes)
-    if should_capture_key(normalized) then
-      ring_push(normalized)
+    -- Be maximally defensive: ignore anything unexpected.
+    if type(rawKeyBytes) ~= 'string' or rawKeyBytes == '' then
+      return
     end
+
+    -- keytrans itself can throw in rare cases; protect it.
+    local ok, normalized = pcall(vim.keytrans, rawKeyBytes)
+    if not ok or type(normalized) ~= 'string' or normalized == '' then
+      return
+    end
+
+    -- No mode checks, no notify, no vim.api calls here. Just store.
+    ring_push(normalized)
   end, runtimeState.namespace)
 end
 

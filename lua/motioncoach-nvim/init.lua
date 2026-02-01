@@ -8,10 +8,16 @@ local MotionCoachNvim = {}
 function MotionCoachNvim.setup(userConfig)
   Config.apply(userConfig or {})
   State.init()
-  Keylog.install_if_needed()
 
   Episodes.install_autocmds()
-  Episodes.set_coaching_level(Config.get().coachingLevel)
+
+  vim.api.nvim_create_autocmd('VimEnter', {
+    once = true,
+    callback = function()
+      Keylog.install_if_needed()
+      Episodes.set_coaching_level(Config.get().coachingLevel)
+    end,
+  })
 end
 
 function MotionCoachNvim.set_level(level)
