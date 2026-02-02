@@ -10,28 +10,38 @@ Table of Contents                         *motioncoach-nvim-table-of-contents*
   - Commands                      |motioncoach-nvim-motioncoach-nvim-commands|
   - Suggested Keymaps    |motioncoach-nvim-motioncoach-nvim-suggested-keymaps|
   - Configuration            |motioncoach-nvim-motioncoach-nvim-configuration|
-  - Privacy Defaults      |motioncoach-nvim-motioncoach-nvim-privacy-defaults|
-  - Design Notes              |motioncoach-nvim-motioncoach-nvim-design-notes|
+  - Privacy                        |motioncoach-nvim-motioncoach-nvim-privacy|
+  - The formatter            |motioncoach-nvim-motioncoach-nvim-the-formatter|
+  - Plugin Recommendations { WORK IN PROGRESS }|motioncoach-nvim-motioncoach-nvim-plugin-recommendations-{-work-in-progress-}|
+  - Provider Hook { WORK IN PROGRESS }|motioncoach-nvim-motioncoach-nvim-provider-hook-{-work-in-progress-}|
+  - Dev Notes                    |motioncoach-nvim-motioncoach-nvim-dev-notes|
   - Philosophy                  |motioncoach-nvim-motioncoach-nvim-philosophy|
   - About the Author (emo333)|motioncoach-nvim-motioncoach-nvim-about-the-author-(emo333)|
+  - Contributions            |motioncoach-nvim-motioncoach-nvim-contributions|
   - License                        |motioncoach-nvim-motioncoach-nvim-license|
 
 ==============================================================================
 1. motioncoach-nvim                        *motioncoach-nvim-motioncoach-nvim*
 
-motioncoach.nvim is a pure-Lua Neovim plugin that watches your navigation and
-editing **episodes** and suggests more efficient Vim motions and techniques.
+`motioncoach-nvim` is a pure **Lua** Neovim plugin that watches your navigation
+and editing **episodes** and suggests more efficient Vim motions and
+techniques.
 
-It is designed as a _coach_, not a linter: suggestions are contextual,
-rate-limited, undo-aware, and layered so beginners aren’t overwhelmed.
+It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
-All output is delivered via a "wrapped" **vim.notify**.
+- contextual
+- rate-limited
+- undo-aware
+- layered
+    so beginner peeps aren’t overwhelmed and advanced peeps aren’t annoyed.
+
+All suggestions are delivered via a _“wrapped”_ **vim.notify**.
 
 ------------------------------------------------------------------------------
 
 COACHING LEVELS            *motioncoach-nvim-motioncoach-nvim-coaching-levels*
 
-motioncoach has **three coaching levels**:
+`motioncoach-nvim` has **three coaching levels**:
 
 - **Level 0** — Off
 - **Level 1** — Beginner coaching
@@ -92,6 +102,7 @@ LAZY.NVIM ~
     }
 <
 
+------------------------------------------------------------------------------
 
 COMMANDS                          *motioncoach-nvim-motioncoach-nvim-commands*
 
@@ -105,6 +116,7 @@ COMMANDS                          *motioncoach-nvim-motioncoach-nvim-commands*
 
 `:MotionCoachLevel 0|1|2`
 
+------------------------------------------------------------------------------
 
 SUGGESTED KEYMAPS        *motioncoach-nvim-motioncoach-nvim-suggested-keymaps*
 
@@ -126,6 +138,7 @@ SUGGESTED KEYMAPS        *motioncoach-nvim-motioncoach-nvim-suggested-keymaps*
     end)
 <
 
+------------------------------------------------------------------------------
 
 CONFIGURATION                *motioncoach-nvim-motioncoach-nvim-configuration*
 
@@ -187,10 +200,11 @@ NOTIFICATION CONFIGURATION (OPTIONAL) ~
     }
 <
 
+------------------------------------------------------------------------------
 
-PRIVACY DEFAULTS          *motioncoach-nvim-motioncoach-nvim-privacy-defaults*
+PRIVACY                            *motioncoach-nvim-motioncoach-nvim-privacy*
 
-By default, motioncoach:
+By default, `motioncoach-nvim`:
 
 ❌ Does not capture command-line input (: / ?)
 
@@ -225,7 +239,18 @@ TYPED KEYS DISPLAY (ADVANCED ONLY) ~
 <
 
 
-THE FORMATTER ~
+YANK HISTORY ~
+
+`motioncoach-nvim` captures yank events via `TextYankPost` and stores them in a
+per-buffer yank ring.
+
+- This is used only to improve coaching quality
+- Yank contents are never displayed
+- Yank contents never leave memory
+
+------------------------------------------------------------------------------
+
+THE FORMATTER                *motioncoach-nvim-motioncoach-nvim-the-formatter*
 
 - filters noise (, mouse events, etc.)
 - collapses repeats (j×12)
@@ -243,8 +268,9 @@ Configure it like this:
     })
 <
 
+------------------------------------------------------------------------------
 
-PLUGIN RECOMMENDATIONS ~
+PLUGIN RECOMMENDATIONS { WORK IN PROGRESS }*motioncoach-nvim-motioncoach-nvim-plugin-recommendations-{-work-in-progress-}*
 
 `motioncoach.nvim` can suggest plugins only after repeated evidence and only in
 advanced mode.
@@ -255,7 +281,7 @@ advanced mode.
     - Designed to evolve over time
 
 
-OPTIONAL
+OPTIONAL ~
 
 - Disable all plugin recommendations:
 
@@ -279,8 +305,9 @@ OPTIONAL
     })
 <
 
+------------------------------------------------------------------------------
 
-PROVIDER HOOK (RECOMMENDED) ~
+PROVIDER HOOK { WORK IN PROGRESS }*motioncoach-nvim-motioncoach-nvim-provider-hook-{-work-in-progress-}*
 
 For long-term evolution, you can supply a provider function that decides
 recommendations dynamically:
@@ -301,52 +328,49 @@ recommendations dynamically:
 
 - The provider runs before built-in defaults.
 
+------------------------------------------------------------------------------
 
-YANK HISTORY ~
+DEV NOTES                        *motioncoach-nvim-motioncoach-nvim-dev-notes*
 
-motioncoach captures yank events via TextYankPost and stores them in a
-per-buffer yank ring.
+- Key logging is lightweight and deferred
+- Heavy analysis happens only at episode boundaries
+- Undo actions temporarily suppress suggestions
+- Mappings and plugins may affect key visibility — state diffs are always
+    preferred
+- Suggestions are intentionally conservative
 
-This is used only to improve coaching quality
-
-Yank contents are never displayed
-
-Yank contents never leave memory
-
-
-DESIGN NOTES                  *motioncoach-nvim-motioncoach-nvim-design-notes*
-
-Key logging is lightweight and deferred
-
-Heavy analysis happens only at episode boundaries
-
-Undo actions temporarily suppress suggestions
-
-Mappings and plugins may affect key visibility — state diffs are always
-preferred
-
-Suggestions are intentionally conservative
-
+------------------------------------------------------------------------------
 
 PHILOSOPHY                      *motioncoach-nvim-motioncoach-nvim-philosophy*
 
-- Teach the next better motion — not the perfect one.
+- Learn the next better motion — not the perfect one.
 - `motioncoach-nvim` is meant to grow with you and once you got your Vim Motions
     down, remove it :)
 
+------------------------------------------------------------------------------
 
 ABOUT THE AUTHOR (EMO333)*motioncoach-nvim-motioncoach-nvim-about-the-author-(emo333)*
 
 - I am not a professional programmer.
 - I have been programming most of my life;
-    either as side duties inherint to work or as hobby at home.
+    either as side duties inherent to work or as hobby at home.
 - Vim/NeoVim/Lua are all new to me ( started delving into these around November 2025 ).
-- I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim Motions.
+- I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim motions.
+- I used ai to assist me developing this. ( about 50/50(impressed/disappointed) on the ai results ).
 
+------------------------------------------------------------------------------
+
+CONTRIBUTIONS                *motioncoach-nvim-motioncoach-nvim-contributions*
+
+Hell yeah! Bring em!
+
+------------------------------------------------------------------------------
 
 LICENSE                            *motioncoach-nvim-motioncoach-nvim-license*
 
-MIT
+MIT(ch) <– I crack me up ;)
+
+------------------------------------------------------------------------------
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
