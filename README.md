@@ -1,16 +1,22 @@
 # `motioncoach-nvim`
 
-motioncoach.nvim is a pure-Lua Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
+`motioncoach-nvim` is a pure **Lua** Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
 
-It is designed as a _coach_, not a linter: suggestions are contextual, rate-limited, undo-aware, and layered so beginners aren’t overwhelmed.
+It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
-All output is delivered via a "wrapped" **`vim.notify`**.
+- contextual
+- rate-limited
+- undo-aware
+- layered
+  so beginner peeps aren’t overwhelmed and advanced peeps aren't annoyed.
+
+All suggestions are delivered via a _"wrapped"_ **`vim.notify`**.
 
 ---
 
 ## Coaching Levels
 
-motioncoach has **three coaching levels**:
+`motioncoach-nvim` has **three coaching levels**:
 
 - **Level 0** — Off
 - **Level 1** — Beginner coaching
@@ -69,6 +75,8 @@ Only **advanced mode** shows the formatted key history.
 }
 ```
 
+---
+
 ## Commands
 
 `:MotionCoachOff`
@@ -80,6 +88,8 @@ Only **advanced mode** shows the formatted key history.
 `:MotionCoachToggle`
 
 `:MotionCoachLevel 0|1|2`
+
+---
 
 ## Suggested Keymaps
 
@@ -100,6 +110,8 @@ vim.keymap.set("n", "<leader>m2", function()
   require("motioncoach-nvim").set_level(2)
 end)
 ```
+
+---
 
 ## Configuration
 
@@ -161,9 +173,11 @@ return {
 
 ```
 
-## Privacy Defaults
+---
 
-By default, motioncoach:
+## Privacy
+
+By default, `motioncoach-nvim`:
 
 ❌ Does not capture command-line input (: / ?)
 
@@ -197,7 +211,19 @@ captureInsertModeKeys = false,
 You typed: j×12 w d i w
 ```
 
-### The formatter
+### Yank History
+
+`motioncoach-nvim` captures yank events via `TextYankPost` and stores them in a per-buffer yank ring.
+
+- This is used only to improve coaching quality
+
+- Yank contents are never displayed
+
+- Yank contents never leave memory
+
+---
+
+## The formatter
 
 - filters noise (<Plug>, mouse events, etc.)
 
@@ -217,7 +243,9 @@ require("motioncoach-nvim").setup({
 })
 ```
 
-### Plugin Recommendations
+---
+
+## Plugin Recommendations { WORK IN PROGRESS }
 
 `motioncoach.nvim` can suggest plugins only after repeated evidence and only in advanced mode.
 
@@ -228,7 +256,7 @@ require("motioncoach-nvim").setup({
 
   - Designed to evolve over time
 
-#### Optional
+### Optional
 
 - Disable all plugin recommendations:
 
@@ -252,7 +280,9 @@ surround = { enabled = false },
 })
 ```
 
-### Provider Hook (Recommended)
+---
+
+## Provider Hook { WORK IN PROGRESS }
 
 For long-term evolution, you can supply a provider function that decides recommendations dynamically:
 
@@ -272,42 +302,49 @@ end
 
 - The provider runs before built-in defaults.
 
-### Yank History
+---
 
-motioncoach captures yank events via TextYankPost and stores them in a per-buffer yank ring.
+## Dev Notes
 
-This is used only to improve coaching quality
+- Key logging is lightweight and deferred
 
-Yank contents are never displayed
+- Heavy analysis happens only at episode boundaries
 
-Yank contents never leave memory
+- Undo actions temporarily suppress suggestions
 
-## Design Notes
+- Mappings and plugins may affect key visibility — state diffs are always preferred
 
-Key logging is lightweight and deferred
+- Suggestions are intentionally conservative
 
-Heavy analysis happens only at episode boundaries
-
-Undo actions temporarily suppress suggestions
-
-Mappings and plugins may affect key visibility — state diffs are always preferred
-
-Suggestions are intentionally conservative
+---
 
 ## Philosophy
 
-- Teach the next better motion — not the perfect one.
+- Learn the next better motion — not the perfect one.
 
 - `motioncoach-nvim` is meant to grow with you and once you got your Vim Motions down, remove it :)
+
+---
 
 ## About the Author (emo333)
 
 - I am not a professional programmer.
 - I have been programming most of my life;
-  either as side duties inherint to work or as hobby at home.
+  either as side duties inherent to work or as hobby at home.
 - Vim/NeoVim/Lua are all new to me ( started delving into these around November 2025 ).
-- I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim Motions.
+- I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim motions.
+- I used ai to assist me developing this. ( about 50/50(impressed/disappointed) on the ai results ).
+
+---
+
+## Contributions
+
+Hell yeah! Bring em!
+
+---
 
 ## License
 
-MIT
+MIT(ch) <-- I crack me up ;)
+
+---
