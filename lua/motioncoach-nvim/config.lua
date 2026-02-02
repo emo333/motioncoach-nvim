@@ -2,7 +2,7 @@ local Config = {}
 
 local defaultConfig = {
   coachingLevel = 1,
-  notifyLogLevel = vim.log.levels.DEBUG,
+  notifyLogLevel = vim.log.levels.INFO,
 
   episodeGapMilliseconds = 700,
   minimumNaiveCostToCoach = 8,
@@ -73,12 +73,12 @@ local defaultConfig = {
   },
 }
 
-notificationWrap = {
-  enabled = true,
-  -- If nil, uses min(90, &columns - 10)
-  width = nil,
-  margin = 10, -- when using &columns
-}
+-- notificationWrap = {
+--   enabled = true,
+--   -- If nil, uses min(90, &columns - 10)
+--   width = nil,
+--   margin = 10, -- when using &columns
+-- }
 
 local activeConfig = vim.deepcopy(defaultConfig)
 
