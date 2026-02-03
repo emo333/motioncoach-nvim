@@ -1,9 +1,10 @@
-*motioncoach-nvim.txt*      For NVIM v0.8.0      Last change: 2026 February 02
+*motioncoach-nvim.txt*      For NVIM v0.8.0      Last change: 2026 February 03
 
 ==============================================================================
 Table of Contents                         *motioncoach-nvim-table-of-contents*
 
-1. motioncoach-nvim                        |motioncoach-nvim-motioncoach-nvim|
+1. { THIS PLUGIN IS NOT IN A PRODUCTION STATE !!! }|motioncoach-nvim-{-this-plugin-is-not-in-a-production-state-!!!-}|
+2. motioncoach-nvim                        |motioncoach-nvim-motioncoach-nvim|
   - Coaching Levels        |motioncoach-nvim-motioncoach-nvim-coaching-levels|
   - Features                      |motioncoach-nvim-motioncoach-nvim-features|
   - Installation              |motioncoach-nvim-motioncoach-nvim-installation|
@@ -21,7 +22,11 @@ Table of Contents                         *motioncoach-nvim-table-of-contents*
   - License                        |motioncoach-nvim-motioncoach-nvim-license|
 
 ==============================================================================
-1. motioncoach-nvim                        *motioncoach-nvim-motioncoach-nvim*
+1. { THIS PLUGIN IS NOT IN A PRODUCTION STATE !!! }*motioncoach-nvim-{-this-plugin-is-not-in-a-production-state-!!!-}*
+
+
+==============================================================================
+2. motioncoach-nvim                        *motioncoach-nvim-motioncoach-nvim*
 
 `motioncoach-nvim` is a pure **Lua** Neovim plugin that watches your navigation
 and editing **episodes** and suggests more efficient Vim motions and
