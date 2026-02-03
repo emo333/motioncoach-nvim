@@ -1,8 +1,7 @@
+local Advanced = {}
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 local Plugins = require('motioncoach-nvim.suggestions.plugins')
-
-local Advanced = {}
 
 local function build_key_string(keys)
   return ' ' .. table.concat(keys, ' ') .. ' '
@@ -17,6 +16,11 @@ local function has_any_key(keys, keySet)
   return false
 end
 
+---Clamp <-- sounds better than Restrict ;) a number given between a min-max range
+---@param value number
+---@param minimum number
+---@param maximum number
+---@return number
 local function clampNumber(value, minimum, maximum)
   if value < minimum then
     return minimum
@@ -27,6 +31,8 @@ local function clampNumber(value, minimum, maximum)
   return value
 end
 
+--- Gets the range of the last operator and puts it in a nice little table with the buffer number, and the starting row, and starting column, and ending row, and ending column.  How cool is that!!
+---@return {}
 local function detect_last_operator_range()
   local startPos = vim.fn.getpos("'[")
   local endPos = vim.fn.getpos("']")
@@ -72,6 +78,17 @@ local function count_compression(keys)
   return nil
 end
 
+--- INFO: TEXT OBJECT SUGGESTION
+---  detection:
+---    1. Homie deletes a char, word, or block(chunk)
+---      a. Did Homie paste in deleted row/col?
+--- suggestion: {word} "Yo Homie, you can use 'diw'(think: [d]elete [i]nside [w]ord) to delete the word your cursor within on regardless where your cursor is within the word"
+--- suggestion: {block} "Yo Homie, you can use 'di' + " or [ or { or ( ---think: [d]elete [i]nside "quotes or [braces or {brackets or (parenthesis--- to delete the block your cursor is within regardless where your cursor is within the block"
+---      b. Did Homie use v + w/e/b prior to delete?
+--- suggestion: "Yo Homie, you can use 'yi' "
+---    2. Homie yanks a word, or block(chunk)
+---      a. Did Homie use v + w/e/b prior to yank?
+--- suggestion:
 local function text_object_suggestion(keys, operatorRange, get_line)
   if not operatorRange then
     return nil
@@ -162,6 +179,9 @@ local function detect_surround_like(keys, operatorRange)
   return usedHunting and usedChangeOrDelete
 end
 
+--- INFO: REGISTER SUGGESTION
+---  detection:
+---  suggestion:
 local function register_suggestion(keys, perBufferState, runtimeState)
   local keyString = build_key_string(keys)
 
@@ -210,6 +230,9 @@ local function register_suggestion(keys, perBufferState, runtimeState)
   return nil
 end
 
+--- INFO: JUMPLIST SUGGESTION
+---  detection:
+---  suggestion:
 local function jumplist_suggestion(episode, keys, perBufferState)
   local traveled = math.abs(episode.to.row - episode.from.row)
     + math.abs(episode.to.col - episode.from.col)
@@ -231,6 +254,9 @@ local function jumplist_suggestion(episode, keys, perBufferState)
   return 'Navigation tip: use jumplist — `<C-o>` back, `<C-i>` forward. Also ```` returns to last jump.'
 end
 
+--- INFO: MARKS SUGGESTION
+---  detection:
+---  suggestion:
 local function marks_suggestion(episode, keys, perBufferState, config)
   local keyString = build_key_string(keys)
   if keyString:find(' m') or keyString:find(" '") or keyString:find(' `') then
@@ -270,8 +296,8 @@ local function treesitter_hint(episode, perBufferState)
   return 'Tip: with Treesitter textobjects, you can jump/select functions/classes.'
 end
 
+-- If history(yank ring) exists, hint that recent yanks are there to be devoured!! and registers 0/" may help.
 local function yank_ring_hint(perBufferState)
-  -- If we have history, hint that a yank ring exists (in our plugin) and registers 0/" may help.
   if not perBufferState.yankRing or #perBufferState.yankRing == 0 then
     return nil
   end
@@ -279,25 +305,26 @@ local function yank_ring_hint(perBufferState)
   if not latest or not latest.text then
     return nil
   end
-
-  -- Keep this subtle: don’t print content (privacy), just remind about registers.
-  return 'Yank tip: you have recent yanks—remember `"0p` for last yank. (Your default register can be overwritten by deletes.)'
+  return 'Yank tip: You have recent yanks! -—Remember `"0p` for last yank. (Your default register can be overwritten by deletes.)'
 end
 
+--- INFO: THE MAIN FUNCTION OF ADVANCED MODE COACHING SUGGESTIONS
+--
+---@param episode {}
+---@param context {}
+---@return string|nil, {} -- returns the actual suggestion text for a notification OR returns nil if no suggestions were twiggered, and a table of recent keys.
 function Advanced.suggest(episode, context)
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
 
   local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
-
   local s1 = count_compression(recentKeys)
   if s1 then
     return s1, recentKeys
   end
 
   local operatorRange = detect_last_operator_range()
-
   local s2 = text_object_suggestion(recentKeys, operatorRange, context.get_line)
   if s2 then
     perBufferState.evidenceCounters.textObjectNeedEvidenceCount = perBufferState.evidenceCounters.textObjectNeedEvidenceCount
