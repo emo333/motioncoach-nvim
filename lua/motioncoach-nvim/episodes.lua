@@ -1,14 +1,17 @@
 -- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
 -- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
+
+local Episodes = {}
+
 local Advanced = require('motioncoach-nvim.suggestions.advanced')
 local Beginner = require('motioncoach-nvim.suggestions.beginner')
 local Config = require('motioncoach-nvim.config')
-local Episodes = {}
 local Formatter = require('motioncoach-nvim.formatter')
 local Keylog = require('motioncoach-nvim.keylog')
 local Notify = require('motioncoach-nvim.notify')
 local Registers = require('motioncoach-nvim.registers')
 local State = require('motioncoach-nvim.state')
+local Utils = require('motioncoach-nvim.utils')
 
 ---@return number ... current time in milliseconds
 local function now_ms()
@@ -24,15 +27,15 @@ local function get_line(bufferNumber, row1)
   return vim.api.nvim_buf_get_lines(bufferNumber, row1 - 1, row1, false)[1] or ''
 end
 
-local function clampNumber(value, minimum, maximum)
-  if value < minimum then
-    return minimum
-  end
-  if value > maximum then
-    return maximum
-  end
-  return value
-end
+-- local function clampNumber(value, minimum, maximum)
+--   if value < minimum then
+--     return minimum
+--   end
+--   if value > maximum then
+--     return maximum
+--   end
+--   return value
+-- end
 
 ---@return boolean ... Is mode n/v/V/<C-v>/o ?
 local function is_motion_mode(modeString)
@@ -217,7 +220,7 @@ end
 
 function Episodes.set_coaching_level(level)
   level = tonumber(level) or 0
-  level = clampNumber(level, 0, 2)
+  level = Utils.clampNumber(level, 0, 2)
 
   local config = Config.get()
   config.coachingLevel = level
