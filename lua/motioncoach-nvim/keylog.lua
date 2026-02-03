@@ -4,7 +4,7 @@ local State = require('motioncoach-nvim.state')
 local Keylog = {}
 
 local function now_ms()
-  return math.floor(vim.loop.hrtime() / 1e6)
+  return math.floor(vim.uv.hrtime() / 1e6)
 end
 
 local function ring_push(token)

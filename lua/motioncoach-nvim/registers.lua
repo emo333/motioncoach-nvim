@@ -6,7 +6,7 @@ local State = require('motioncoach-nvim.state')
 local Registers = {}
 
 local function now_ms()
-  return math.floor(vim.loop.hrtime() / 1e6)
+  return math.floor(vim.uv.hrtime() / 1e6)
 end
 
 local function normalize_register_name(regname)

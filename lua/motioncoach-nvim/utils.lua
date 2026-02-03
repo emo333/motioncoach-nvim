@@ -2,6 +2,11 @@
 --
 local Utils = {}
 
+---Clamp <-- sounds better than Restrict ;) a number given between a min-max range
+---@param value number
+---@param minimum number
+---@param maximum number
+---@return number
 local function clampNumber(value, minimum, maximum)
   if value < minimum then
     return minimum
@@ -9,9 +14,6 @@ local function clampNumber(value, minimum, maximum)
   if value > maximum then
     return maximum
   end
-
-  vim.notify('Utils.clampNumber: ' .. value, 3)
-
   return value
 end
 

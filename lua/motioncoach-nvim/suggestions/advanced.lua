@@ -1,7 +1,9 @@
 local Advanced = {}
+
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 local Plugins = require('motioncoach-nvim.suggestions.plugins')
+local Utils = require('motioncoach-nvim.utils')
 
 local function build_key_string(keys)
   return ' ' .. table.concat(keys, ' ') .. ' '
@@ -14,21 +16,6 @@ local function has_any_key(keys, keySet)
     end
   end
   return false
-end
-
----Clamp <-- sounds better than Restrict ;) a number given between a min-max range
----@param value number
----@param minimum number
----@param maximum number
----@return number
-local function clampNumber(value, minimum, maximum)
-  if value < minimum then
-    return minimum
-  end
-  if value > maximum then
-    return maximum
-  end
-  return value
 end
 
 --- Gets the range of the last operator and puts it in a nice little table with the buffer number, and the starting row, and starting column, and ending row, and ending column.  How cool is that!!
@@ -124,8 +111,8 @@ local function text_object_suggestion(keys, operatorRange, get_line)
 
   if operatorRange.startRow == operatorRange.endRow then
     local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
-    local a = clampNumber(operatorRange.startCol + 1, 1, #lineText)
-    local b = clampNumber(operatorRange.endCol + 1, 1, #lineText)
+    local a = Utils.clampNumber(operatorRange.startCol + 1, 1, #lineText)
+    local b = Utils.clampNumber(operatorRange.endCol + 1, 1, #lineText)
     if b < a then
       a, b = b, a
     end
@@ -187,13 +174,13 @@ local function register_suggestion(keys, perBufferState, runtimeState)
 
   if
     (keyString:find(' d ') or keyString:find(' c '))
-    and (vim.loop.hrtime() and (os.clock() or true))
+    and (vim.uv.hrtime() and (os.clock() or true))
   then
     -- Use suppression timestamp heuristic (reliable enough)
-    if vim.loop.hrtime() and (runtimeState.suppressSuggestionsUntilMilliseconds or 0) then
+    if vim.uv.hrtime() and (runtimeState.suppressSuggestionsUntilMilliseconds or 0) then
       -- We'll just check window:
       if
-        math.floor(vim.loop.hrtime() / 1e6)
+        math.floor(vim.uv.hrtime() / 1e6)
         < (
           runtimeState.suppressSuggestionsUntilMilliseconds
           + Config.get().undoSuppressionMilliseconds

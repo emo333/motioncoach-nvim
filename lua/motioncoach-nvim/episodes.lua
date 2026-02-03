@@ -27,16 +27,6 @@ local function get_line(bufferNumber, row1)
   return vim.api.nvim_buf_get_lines(bufferNumber, row1 - 1, row1, false)[1] or ''
 end
 
--- local function clampNumber(value, minimum, maximum)
---   if value < minimum then
---     return minimum
---   end
---   if value > maximum then
---     return maximum
---   end
---   return value
--- end
-
 ---@return boolean ... Is mode n/v/V/<C-v>/o ?
 local function is_motion_mode(modeString)
   return modeString == 'n'
