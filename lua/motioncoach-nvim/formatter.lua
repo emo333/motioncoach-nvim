@@ -1,9 +1,11 @@
-local Config = require('motioncoach-nvim.config')
-
+--- INFO: Formatting helper
 local Formatter = {}
 
+local Config = require('motioncoach-nvim.config')
+
+local formatterConfig = Config.get().typedKeysFormatter
+
 local function should_display_token(token)
-  local formatterConfig = Config.get().typedKeysFormatter
   if not formatterConfig.enabled then
     return true
   end
@@ -19,13 +21,15 @@ local function should_display_token(token)
   return true
 end
 
+---@param rawKeyTokens {} the keys Homie typed that led to this suggestion
 function Formatter.format_keys_for_display(rawKeyTokens)
-  local formatterConfig = Config.get().typedKeysFormatter
   if not formatterConfig.enabled then
     return table.concat(rawKeyTokens, ' ')
   end
 
   local filtered = {}
+
+  ---@param token string The rawKeyToken being iterated from rawKeyTokens.
   for _, token in ipairs(rawKeyTokens) do
     if should_display_token(token) then
       table.insert(filtered, token)

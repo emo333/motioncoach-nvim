@@ -67,6 +67,8 @@ local function can_suggest(runtimeState)
   return true
 end
 
+---@param message string the suggested message to dsiplay
+---@param typedKeys {} the keys Homie typed that led to this suggestion
 local function emit(message, typedKeys)
   local config = Config.get()
   local runtimeState = State.get()

@@ -1,6 +1,7 @@
 ---Configuration Module
 local Config = {}
 
+-- TODO: reconsider all these defaults before publishing
 local defaultConfig = {
   --- default 1 (Beginner)
   coachingLevel = 1,
