@@ -146,6 +146,9 @@ local function text_object_suggestion(keys, operatorRange, get_line)
   return nil
 end
 
+---@param keys {} Keys
+---@param operatorRange {} Operator Range
+---@return boolean
 local function detect_surround_like(keys, operatorRange)
   if not operatorRange then
     return false

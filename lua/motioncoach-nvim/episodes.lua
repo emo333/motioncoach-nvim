@@ -208,6 +208,7 @@ local function on_cursor_moved()
   episode.timeToMs = currentTimeMs
 end
 
+---@param level number 0 = off | 1 = Beginner | 2 = Advanced
 function Episodes.set_coaching_level(level)
   level = tonumber(level) or 0
   level = Utils.clampNumber(level, 0, 2)

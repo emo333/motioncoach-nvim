@@ -1,15 +1,14 @@
+local MotionCoachNvim = {}
+
 local Config = require('motioncoach-nvim.config')
 local Episodes = require('motioncoach-nvim.episodes')
 local Keylog = require('motioncoach-nvim.keylog')
-local MotionCoachNvim = {}
 local State = require('motioncoach-nvim.state')
 
 function MotionCoachNvim.setup(userConfig)
   Config.apply(userConfig or {})
   State.init()
-
   Episodes.install_autocmds()
-
   vim.api.nvim_create_autocmd('VimEnter', {
     once = true,
     callback = function()
@@ -19,6 +18,7 @@ function MotionCoachNvim.setup(userConfig)
   })
 end
 
+---@param level number 0 = off | 1 = Beginner | 2 = Advanced
 function MotionCoachNvim.set_level(level)
   Episodes.set_coaching_level(level)
 end
