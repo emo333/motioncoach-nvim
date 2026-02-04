@@ -1,5 +1,7 @@
 # **{ THIS PLUGIN IS NOT IN A PRODUCTION STATE !!! }**
 
+![Danger](.github/assets/skull.png)
+
 # `motioncoach-nvim`
 
 `motioncoach-nvim` is a pure **Lua** Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
