@@ -183,7 +183,7 @@ local function register_suggestion(keys, perBufferState, runtimeState)
     if vim.uv.hrtime() and (runtimeState.suppressSuggestionsUntilMilliseconds or 0) then
       -- We'll just check window:
       if
-        math.floor(vim.uv.hrtime() / 1e6)
+        Utils.now_ms()
         < (
           runtimeState.suppressSuggestionsUntilMilliseconds
           + Config.get().undoSuppressionMilliseconds
@@ -199,6 +199,8 @@ local function register_suggestion(keys, perBufferState, runtimeState)
   local pasteCount = 0
   local yankCount = 0
   for _, token in ipairs(keys) do
+    vim.notify('token: ' .. token, 4)
+
     if token == 'p' or token == 'P' then
       pasteCount = pasteCount + 1
     end
@@ -207,6 +209,8 @@ local function register_suggestion(keys, perBufferState, runtimeState)
     end
   end
 
+  --- TEST:
+  vim.notify('pasteCount: ' .. pasteCount .. ' | yankCount: ' .. yankCount)
   if pasteCount >= 3 then
     perBufferState.evidenceCounters.yankHuntingEvidenceCount = perBufferState.evidenceCounters.yankHuntingEvidenceCount
       + 1
@@ -304,6 +308,9 @@ end
 ---@param context {}
 ---@return string|nil, {} -- returns the actual suggestion text for a notification OR returns nil if no suggestions were twiggered, and a table of recent keys.
 function Advanced.suggest(episode, context)
+  --- TEST:
+  vim.notify('in Advanced.suggest', 3)
+
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
@@ -328,8 +335,14 @@ function Advanced.suggest(episode, context)
     return 'Delimiter tip: use text objects like `ci"`, `ci(`, `ci{` (and `ca...`).', recentKeys
   end
 
+  --- TEST:
+  vim.notify('recentKeys ' .. #recentKeys)
   local s3 = register_suggestion(recentKeys, perBufferState, runtimeState)
+  if not s3 then
+    vim.notify('register suggestion(s3) nil')
+  end
   if s3 then
+    vim.notify('register suggestion(s3)' .. s3)
     return s3, recentKeys
   end
 

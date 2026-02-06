@@ -21,4 +21,9 @@ function Utils.clampNumber(value, minimum, maximum)
   return clampNumber(value, minimum, maximum)
 end
 
+---@return number now_ms current time in milliseconds
+function Utils.now_ms()
+  return math.floor(vim.uv.hrtime() / 1e6)
+end
+
 return Utils

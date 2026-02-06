@@ -1,13 +1,9 @@
 -- lua/motioncoach/registers.lua
 -- Captures yank contents (TextYankPost) into a per-buffer yank ring for coaching.
-
-local State = require('motioncoach-nvim.state')
-
 local Registers = {}
 
-local function now_ms()
-  return math.floor(vim.uv.hrtime() / 1e6)
-end
+local State = require('motioncoach-nvim.state')
+local Utils = require('motioncoach-nvim.utils')
 
 local function normalize_register_name(regname)
   if regname == nil or regname == '' then
@@ -45,7 +41,7 @@ function Registers.capture_yank(event)
   table.insert(perBufferState.yankRing, 1, {
     reg = registerName,
     text = registerText,
-    timeMs = now_ms(),
+    timeMs = Utils.now_ms(),
     operator = event.operator, -- "y", "d", "c" etc (may be nil)
     regtype = event.regtype, -- "v", "V", "\022" etc
   })

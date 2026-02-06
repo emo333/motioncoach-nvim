@@ -13,11 +13,6 @@ local Registers = require('motioncoach-nvim.registers')
 local State = require('motioncoach-nvim.state')
 local Utils = require('motioncoach-nvim.utils')
 
----@return number ... current time in milliseconds
-local function now_ms()
-  return math.floor(vim.uv.hrtime() / 1e6)
-end
-
 -- TODO: Need to handle this for other notifiers (plugins) besides snacks.notify
 local function notify(message)
   Notify.send('MotionCoach: ' .. message, Config.get().notifyLogLevel)
@@ -55,7 +50,7 @@ local function can_suggest(runtimeState)
   if config.coachingLevel == 0 then
     return false
   end
-  local t = now_ms()
+  local t = Utils.now_ms()
   if t < runtimeState.suppressSuggestionsUntilMilliseconds then
     return false
   end
@@ -72,7 +67,7 @@ end
 local function emit(message, typedKeys)
   local config = Config.get()
   local runtimeState = State.get()
-  runtimeState.lastSuggestionTimestampMilliseconds = now_ms()
+  runtimeState.lastSuggestionTimestampMilliseconds = Utils.now_ms()
 
   if config.coachingLevel >= 2 and typedKeys and #typedKeys > 0 then
     local formatted = Formatter.format_keys_for_display(typedKeys)
@@ -99,7 +94,7 @@ local function update_undo_suppression(bufferNumber)
   end
 
   if currentSeq < perBufferState.lastUndoSequenceNumber then
-    runtimeState.suppressSuggestionsUntilMilliseconds = now_ms()
+    runtimeState.suppressSuggestionsUntilMilliseconds = Utils.now_ms()
       + config.undoSuppressionMilliseconds
   end
 
@@ -132,11 +127,14 @@ local function finalize_episode()
     get_line = get_line,
   }
 
+  --- TEST: temp set beginner OR advanced vs beginner AND advanced
   -- Always try beginner first (even in advanced) to avoid “too fancy too soon”
-  local beginnerTip = Beginner.suggest(episode, context)
-  if beginnerTip then
-    emit(beginnerTip, nil)
-    return
+  if config.coachingLevel == 1 then
+    local beginnerTip = Beginner.suggest(episode, context)
+    if beginnerTip then
+      emit(beginnerTip, nil)
+      return
+    end
   end
 
   if config.coachingLevel >= 2 then
@@ -184,7 +182,7 @@ local function on_cursor_moved()
   local bufferNumber = vim.api.nvim_get_current_buf()
   update_undo_suppression(bufferNumber)
 
-  local currentTimeMs = now_ms()
+  local currentTimeMs = Utils.now_ms()
   local cursorPos = get_cursor()
 
   if not runtimeState.currentEpisode then

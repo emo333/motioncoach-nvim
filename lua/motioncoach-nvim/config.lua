@@ -4,7 +4,7 @@ local Config = {}
 -- TODO: reconsider all these defaults before publishing
 local defaultConfig = {
   --- default 1 (Beginner)
-  coachingLevel = 1,
+  coachingLevel = 2,
   --- default INFO
   notifyLogLevel = vim.log.levels.INFO,
 

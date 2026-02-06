@@ -1,22 +1,23 @@
-local Config = require('motioncoach-nvim.config')
-local State = require('motioncoach-nvim.state')
-
 local Keylog = {}
 
-local function now_ms()
-  return math.floor(vim.uv.hrtime() / 1e6)
-end
+local Config = require('motioncoach-nvim.config')
+local State = require('motioncoach-nvim.state')
+local Utils = require('motioncoach-nvim.utils')
 
 local function ring_push(token)
   local config = Config.get()
   local runtimeState = State.get()
 
-  local timestamp = now_ms()
+  local timestamp = Utils.now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
 
   runtimeState.keyRingBuffer[writeIndex] = { t = timestamp, k = token }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
+  -- vim.notify('here in ring_push')
+  -- vim.notify(#runtimeState.keyRingBuffer)
+  local msg = tostring(vim.fn.bufnr())
+  vim.notify('runtimeState.keyRingBuffer' .. msg)
 end
 
 function Keylog.get_recent_keys(windowMilliseconds)
@@ -24,7 +25,7 @@ function Keylog.get_recent_keys(windowMilliseconds)
   local runtimeState = State.get()
 
   local keys = {}
-  local cutoff = now_ms() - windowMilliseconds
+  local cutoff = Utils.now_ms() - windowMilliseconds
 
   local itemCount = runtimeState.keyRingLength
   local headIndex = runtimeState.keyRingHeadIndex
@@ -52,20 +53,28 @@ function Keylog.install_if_needed()
   end
   runtimeState.onKeyHookInstalled = true
 
-  vim.on_key(function(rawKeyBytes)
+  -- vim.on_key(function(key, typed)
+  --   if typed ~= "" then
+  --     -- This was physically pressed by the user
+  --   end
+  -- end)
+  vim.on_key(function(key, rawKeyBytes)
     -- Be maximally defensive: ignore anything unexpected.
     if type(rawKeyBytes) ~= 'string' or rawKeyBytes == '' then
       return
     end
 
+    vim.notify(rawKeyBytes)
+
     -- keytrans itself can throw in rare cases; protect it.
     local ok, normalized = pcall(vim.keytrans, rawKeyBytes)
-    if not ok or type(normalized) ~= 'string' or normalized == '' then
-      return
-    end
-
+    -- if not ok or type(normalized) ~= 'string' or normalized == '' then
+    --   return
+    -- end
+    -- vim.notify(normalized)
     -- No mode checks, no notify, no vim.api calls here. Just store.
-    ring_push(normalized)
+    -- ring_push(normalized)
+    ring_push(rawKeyBytes)
   end, runtimeState.namespace)
 end
 
