@@ -1,0 +1,38 @@
+name: Busted Tests with UI Reporting
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write # Required to publish the test report to GitHub Checks
+      pull-requests: write # Required for PR comments
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Lua
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1"
+
+      - name: Setup Luarocks
+        uses: leafo/gh-actions-luarocks@v4
+
+      - name: Install Busted
+        run: luarocks install busted
+
+      - name: Run Tests (Generate JUnit XML)
+        # Busted supports JUnit output natively.
+        # The '|| true' ensures the next step runs even if tests fail.
+        run: busted --output=junit > test-results.xml || true
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Busted Test Results
+          path: test-results.xml
+          reporter: java-junit # Uses standard JUnit format
+
