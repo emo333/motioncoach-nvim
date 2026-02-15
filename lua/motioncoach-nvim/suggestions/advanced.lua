@@ -188,7 +188,15 @@ end
 ---  suggestion:
 local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local keyString = build_key_string(keys)
-
+  -- TEST:
+  vim.notify(
+    'now_ms() : '
+      .. tostring(Utils.now_ms())
+      .. 'runtimeState.suppressSuggestionsUntilMilliseconds : '
+      .. vim.inspect(runtimeState)
+      .. 'Config.undoSuppressionMilliseconds : '
+      .. tostring(Config.get().undoSuppressionMilliseconds)
+  )
   if
     (keyString:find(' d ') or keyString:find(' c '))
     and (vim.uv.hrtime() and (os.clock() or true))
@@ -214,8 +222,10 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local yankCount = 0
   for _, token in ipairs(keys) do
     --- TEST:
-    -- vim.notify('token: ' .. token, 4)
-
+    vim.notify(
+      'token: ' .. token .. ' pasteCount: ' .. pasteCount .. ' yankCount: ' .. yankCount,
+      4
+    )
     if token == 'p' or token == 'P' then
       pasteCount = pasteCount + 1
     end

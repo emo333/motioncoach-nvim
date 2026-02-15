@@ -79,6 +79,8 @@ local function emit(message, typedKeys)
   end
 end
 
+---@param bufferNumber integer
+---@return nil
 local function update_undo_suppression(bufferNumber)
   local config = Config.get()
   local runtimeState = State.get()
@@ -103,10 +105,7 @@ local function update_undo_suppression(bufferNumber)
   perBufferState.lastUndoSequenceNumber = currentSeq
 end
 
----@class function
----@field config {}
----@field runtimeState {}
----@field episode table
+-- Finalizes the episode, if all requirements are met, by emitting a notification with respective suggestion.
 local function finalize_episode()
   local config = Config.get()
   local runtimeState = State.get()

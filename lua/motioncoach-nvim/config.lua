@@ -90,8 +90,6 @@ local defaultConfig = {
 local activeConfig = vim.deepcopy(defaultConfig)
 
 ---Get the Active Configuration
----@function
----@return {} activeConfig The Active Configuration table
 function Config.get()
   return activeConfig
 end

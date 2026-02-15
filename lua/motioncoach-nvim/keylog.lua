@@ -1,4 +1,6 @@
 ---@class KeyLog
+---@field Keylog.get_recent_keys function
+---@field Keylog.install_if_needed function
 local Keylog = {}
 
 local Config = require('motioncoach-nvim.config')
@@ -22,6 +24,8 @@ local function ring_push(token)
   -- vim.notify('runtimeState.keyRingBuffer' .. msg)
 end
 
+---@param windowMilliseconds number
+---@return table
 function Keylog.get_recent_keys(windowMilliseconds)
   local config = Config.get()
   local runtimeState = State.get()
