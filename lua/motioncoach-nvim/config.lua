@@ -1,7 +1,7 @@
 ---Configuration Module
 local Config = {}
 
--- TODO: reconsider all these defaults before publishing
+-- TODO: reconsider (get opinions of avid vim users) all these defaults before publishing
 local defaultConfig = {
   --- default 1 (Beginner)
   coachingLevel = 1,
@@ -86,6 +86,7 @@ local defaultConfig = {
   },
 }
 
+-- deepcopy this so nothing funky happens to default config while this instance of nvim is open
 local activeConfig = vim.deepcopy(defaultConfig)
 
 ---Get the Active Configuration

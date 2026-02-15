@@ -5,6 +5,7 @@ local Config = require('motioncoach-nvim.config')
 
 local formatterConfig = Config.get().typedKeysFormatter
 
+---@param token string
 local function should_display_token(token)
   if not formatterConfig.enabled then
     return true
@@ -29,7 +30,6 @@ function Formatter.format_keys_for_display(rawKeyTokens)
 
   local filtered = {}
 
-  ---@param token string The rawKeyToken being iterated from rawKeyTokens.
   for _, token in ipairs(rawKeyTokens) do
     if should_display_token(token) then
       table.insert(filtered, token)

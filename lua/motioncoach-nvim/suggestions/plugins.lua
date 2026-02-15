@@ -1,3 +1,4 @@
+-- TODO: get back on this wayyyyyyyy down the road...
 -- INFO: Plugin suggestions
 -- e.g. "Homie, you are doing a lot of jumping around.  A good plugin to consider for jumping around is 'Harpoon2'"
 -- e.g. "Homie, you are searching your butt off.  A good plugin to consider for searching around is 'Telescope'"

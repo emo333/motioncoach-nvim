@@ -28,7 +28,7 @@ local function wrap_one_line(line, width)
 
     -- Take a slice and find last whitespace within width
     local slice = remaining:sub(1, width)
-    local cut = slice:match('^.*()%s') -- last whitespace position
+    local cut = slice:match('^.*()%s') -- last whitespace position OR a cat with busted right eye
     if cut and cut > 1 then
       table.insert(out, slice:sub(1, cut - 1))
       i = i + cut
