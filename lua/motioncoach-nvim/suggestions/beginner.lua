@@ -110,6 +110,7 @@ function Beginner.suggest(episode, context)
     end
   end
 
+  -- TODO: make user configurable 7
   if absLineDelta == 0 and absColDelta >= 7 then
     -- FIX: if last keys{from keylogger} were NOT 'w' or 'b' or 'e' 'W' or 'B' or 'E'
     if Keylog.get_recent_keys(2000) then
