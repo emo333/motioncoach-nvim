@@ -114,7 +114,8 @@ function Beginner.suggest(episode, context)
     -- FIX: if last keys{from keylogger} were NOT 'w' or 'b' or 'e' 'W' or 'B' or 'E'
     if Keylog.get_recent_keys(2000) then
     end
-    return 'For long horizontal moves, you can move by words with:\n `w`/`b`/`e`/`W`/`B`/`E`\n  Also, you can use a count (`10l`).'
+    return 'For long horizontal moves, you can move by words with:\n `w`/`b`/`e`/`W`/`B`/`E`\n  Also, you can use a count (`8h` or `16l`).'
+    -- TODO: for advanvced mode suggest using `f`/`F` (maybe this is where a plugin check is done to see if Homie has flash.nvim installed and only if so, suggest using `s`+{a-Z0-9})
   end
 
   -------------------- VERTICAL MOTIONS

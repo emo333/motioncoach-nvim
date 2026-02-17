@@ -83,14 +83,15 @@ end
 ---      a. Did Homie use v + w/e/b prior to yank?
 --- suggestion:
 local function text_object_suggestion(keys, operatorRange, get_line)
-  vim.notify('keys: ' .. vim.inspect(keys))
-  vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
+  -- TEST:
+  -- vim.notify('keys: ' .. vim.inspect(keys))
+  -- vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
   if not operatorRange then
     return nil
   end
   local keyString = build_key_string(keys)
-
-  vim.notify('keyString: ' .. vim.inspect(keyString))
+  -- TEST:
+  -- vim.notify('keyString: ' .. vim.inspect(keyString))
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
   local usedVisual = (keyString:find(' v ') or keyString:find(' V ') or keyString:find('<C%-v>'))
@@ -118,9 +119,8 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     return nil
   end
 
-  vim.notify(
-    'befoer 999------> ' .. vim.inspect(operatorRange.startRow .. '  ' .. operatorRange.endRow)
-  )
+  -- TEST:
+  -- vim.notify( 'befoer 999------> ' .. vim.inspect(operatorRange.startRow .. '  ' .. operatorRange.endRow))
 
   if operatorRange.startRow == operatorRange.endRow then
     local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
@@ -131,7 +131,7 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     end
     local segment = lineText:sub(a, b)
     --- TEST: 999
-    vim.notify('999------> ' .. vim.inspect(segment))
+    -- vim.notify('999------> ' .. vim.inspect(segment))
     if segment:match('^%w[%w_]*$') then
       return 'Text object tip: try `ciw` / `diw` / `yiw` to operate on the word.'
     end
@@ -189,14 +189,14 @@ end
 local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local keyString = build_key_string(keys)
   -- TEST:
-  vim.notify(
-    'now_ms() : '
-      .. tostring(Utils.now_ms())
-      .. 'runtimeState.suppressSuggestionsUntilMilliseconds : '
-      .. vim.inspect(runtimeState)
-      .. 'Config.undoSuppressionMilliseconds : '
-      .. tostring(Config.get().undoSuppressionMilliseconds)
-  )
+  -- vim.notify(
+  --   'now_ms() : '
+  --     .. tostring(Utils.now_ms())
+  --     .. 'runtimeState.suppressSuggestionsUntilMilliseconds : '
+  --     .. vim.inspect(runtimeState)
+  --     .. 'Config.undoSuppressionMilliseconds : '
+  --     .. tostring(Config.get().undoSuppressionMilliseconds)
+  -- )
   if
     (keyString:find(' d ') or keyString:find(' c '))
     and (vim.uv.hrtime() and (os.clock() or true))
@@ -222,10 +222,7 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local yankCount = 0
   for _, token in ipairs(keys) do
     --- TEST:
-    vim.notify(
-      'token: ' .. token .. ' pasteCount: ' .. pasteCount .. ' yankCount: ' .. yankCount,
-      4
-    )
+    -- vim.notify( 'token: ' .. token .. ' pasteCount: ' .. pasteCount .. ' yankCount: ' .. yankCount, 4)
     if token == 'p' or token == 'P' then
       pasteCount = pasteCount + 1
     end
