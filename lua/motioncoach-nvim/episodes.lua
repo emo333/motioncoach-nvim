@@ -292,10 +292,12 @@ function Episodes.set_coaching_level(level)
   end
 end
 
-function Episodes.toggle_level()
-  local config = Config.get()
-  Episodes.set_coaching_level((config.coachingLevel + 1) % 3)
-end
+-- TODO: prob not needed
+--
+-- function Episodes.toggle_level()
+--   local config = Config.get()
+--   Episodes.set_coaching_level((config.coachingLevel + 1) % 3)
+-- end
 
 function Episodes.install_autocmds()
   local augroup = vim.api.nvim_create_augroup('MotionCoach', { clear = true })
@@ -343,9 +345,9 @@ function Episodes.install_autocmds()
   vim.api.nvim_create_user_command('MotionCoachAdvanced', function()
     Episodes.set_coaching_level(2)
   end, {})
-  vim.api.nvim_create_user_command('MotionCoachToggle', function()
-    Episodes.toggle_level()
-  end, {})
+  -- vim.api.nvim_create_user_command('MotionCoachToggle', function()
+  -- Episodes.toggle_level()
+  -- end, {})
   vim.api.nvim_create_user_command('MotionCoachLevel', function(opts)
     Episodes.set_coaching_level(tonumber(opts.args))
   end, {
