@@ -5,23 +5,36 @@ local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 local Plugins = require('motioncoach-nvim.suggestions.plugins')
 local Utils = require('motioncoach-nvim.utils')
--- local Notify = require('motioncoach-nvim.notify')
 
+-- TODO: move this to Utils
 local function build_key_string(keys)
   return ' ' .. table.concat(keys, ' ') .. ' '
 end
 
-local function has_any_key(keys, keySet)
-  for _, k in ipairs(keys) do
-    if keySet[k] then
-      return true
-    end
-  end
-  return false
-end
+-- local function has_any_key(keys, keySet)
+--   for _, k in ipairs(keys) do
+--     if keySet[k] then
+--       return true
+--     end
+--   end
+--   return false
+-- end
 
---- Gets the range of the last operator and puts it in a nice little table with the buffer number, and the starting row, and starting column, and ending row, and ending column.  How cool is that!!
----@return {}
+---@return {} | nil
+--[[
+Gets the range of the last operator and puts it in a nice little table:
+
+{
+  buffer number,
+  starting row,
+  starting column,
+  ending row,
+  ending column
+}
+
+How cool is that!!
+  ]]
+--
 local function detect_last_operator_range()
   -- local startPos = vim.fn.getpos("'[")
   local startPos = vim.fn.getpos("'^")
@@ -32,6 +45,7 @@ local function detect_last_operator_range()
   if startPos[2] == 0 or endPos[2] == 0 then
     return nil
   end
+
   return {
     bufferNumber = startPos[1],
     startRow = startPos[2],
@@ -41,11 +55,16 @@ local function detect_last_operator_range()
   }
 end
 
+-- INFO: COUNT COMPRESSION SUGGESTION
+--
+--  detection: Homie hammers same letter (jkhlwbe) 5 times
+--  suggestion: Yo Homie use a count with your movements!
+--
 ---@param keys {}
 local function count_compression(keys)
   local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
   local lastToken, repeatCount = nil, 0
-  --- TEST:
+  -- TEST:
   -- local localkeys = keys
   -- vim.notify(vim.inspect(localkeys))
   for _, token in ipairs(keys) do
@@ -71,17 +90,19 @@ local function count_compression(keys)
   return nil
 end
 
---- INFO: TEXT OBJECT SUGGESTION
----  detection:
----    1. Homie deletes a char, word, or block(chunk)
----      a. Did Homie paste in deleted row/col?
---- suggestion: {word} "Yo Homie, you can use 'diw'(think: [d]elete [i]nside [w]ord) to delete the word your cursor within on regardless where your cursor is within the word"
---- suggestion: {block} "Yo Homie, you can use 'di' + " or [ or { or ( ---think: [d]elete [i]nside "quotes or [braces or {brackets or (parenthesis--- to delete the block your cursor is within regardless where your cursor is within the block"
----      b. Did Homie use v + w/e/b prior to delete?
---- suggestion: "Yo Homie, you can use 'yi' "
----    2. Homie yanks a word, or block(chunk)
----      a. Did Homie use v + w/e/b prior to yank?
---- suggestion:
+-- INFO: TEXT OBJECT SUGGESTION
+--
+--  detection:
+--    1. Homie deletes a char, word, or block(chunk)
+--      a. Did Homie paste in deleted row/col?
+--  suggestion: {word} "Yo Homie, you can use 'diw'(think: [d]elete [i]nside [w]ord) to delete the word your cursor within on regardless where your cursor is within the word"
+--  suggestion: {block} "Yo Homie, you can use 'di' + " or [ or { or ( ---think: [d]elete [i]nside "quotes or [braces or {brackets or (parenthesis--- to delete the block your cursor is within regardless where your cursor is within the block"
+--      b. Did Homie use v + w/e/b prior to delete?
+--  suggestion: "Yo Homie, you can use 'yi' "
+--     2. Homie yanks a word, or block(chunk)
+--       a. Did Homie use v + w/e/b prior to yank?
+--  suggestion:
+--
 local function text_object_suggestion(keys, operatorRange, get_line)
   -- TEST:
   -- vim.notify('keys: ' .. vim.inspect(keys))
@@ -130,7 +151,7 @@ local function text_object_suggestion(keys, operatorRange, get_line)
       a, b = b, a
     end
     local segment = lineText:sub(a, b)
-    --- TEST: 999
+    -- TEST: 999
     -- vim.notify('999------> ' .. vim.inspect(segment))
     if segment:match('^%w[%w_]*$') then
       return 'Text object tip: try `ciw` / `diw` / `yiw` to operate on the word.'
@@ -160,36 +181,41 @@ local function text_object_suggestion(keys, operatorRange, get_line)
   return nil
 end
 
----@param keys {} Keys
----@param operatorRange {} Operator Range
----@return boolean
-local function detect_surround_like(keys, operatorRange)
-  if not operatorRange then
-    return false
-  end
-  local keyString = build_key_string(keys)
+-- ---@param keys {}?
+-- ---@param operatorRange {}?
+-- ---@return boolean
+-- local function detect_surround_like(keys, operatorRange)
+--   if not operatorRange then
+--     return false
+--   end
+--   if not keys then
+--     return false
+--   end
+--   local keyString = build_key_string(keys)
+--
+--   if keyString:find(' ci') or keyString:find(' di') or keyString:find(' yi') then
+--     return false
+--   end
+--
+--   local usedHunting =
+--     has_any_key(keys, { ['f'] = true, ['F'] = true, ['t'] = true, ['T'] = true, ['%'] = true })
+--   local usedChangeOrDelete = (
+--     keyString:find(' c ')
+--     or keyString:find(' s ')
+--     or keyString:find(' d ')
+--   ) ~= nil
+--   return usedHunting and usedChangeOrDelete
+-- end
 
-  if keyString:find(' ci') or keyString:find(' di') or keyString:find(' yi') then
-    return false
-  end
-
-  local usedHunting =
-    has_any_key(keys, { ['f'] = true, ['F'] = true, ['t'] = true, ['T'] = true, ['%'] = true })
-  local usedChangeOrDelete = (
-    keyString:find(' c ')
-    or keyString:find(' s ')
-    or keyString:find(' d ')
-  ) ~= nil
-  return usedHunting and usedChangeOrDelete
-end
-
---- INFO: VIMREGISTER SUGGESTION
----  detection:
----  suggestion:
+-- INFO: VIMREGISTER SUGGESTION
+--
+--  detection:
+--  suggestion:
+--
 local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local keyString = build_key_string(keys)
-  -- TEST:
-  -- vim.notify(
+  --  TEST:
+  --   vim.notify(
   --   'now_ms() : '
   --     .. tostring(Utils.now_ms())
   --     .. 'runtimeState.suppressSuggestionsUntilMilliseconds : '
@@ -201,9 +227,7 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
     (keyString:find(' d ') or keyString:find(' c '))
     and (vim.uv.hrtime() and (os.clock() or true))
   then
-    -- Use suppression timestamp heuristic (reliable enough)
     if vim.uv.hrtime() and (runtimeState.suppressSuggestionsUntilMilliseconds or 0) then
-      -- We'll just check window:
       if
         Utils.now_ms()
         < (
@@ -211,6 +235,7 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
           + Config.get().undoSuppressionMilliseconds
         )
       then
+        -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
         perBufferState.evidenceCounters.yankHuntingEvidenceCount = perBufferState.evidenceCounters.yankHuntingEvidenceCount
           + 1
         return 'Vim Register tip: use `"_d` / `"_c` to avoid overwriting your yank when deleting/changing.'
@@ -221,7 +246,7 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local pasteCount = 0
   local yankCount = 0
   for _, token in ipairs(keys) do
-    --- TEST:
+    -- TEST:
     -- vim.notify( 'token: ' .. token .. ' pasteCount: ' .. pasteCount .. ' yankCount: ' .. yankCount, 4)
     if token == 'p' or token == 'P' then
       pasteCount = pasteCount + 1
@@ -230,9 +255,10 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
       yankCount = yankCount + 1
     end
   end
-  --- TEST:
+  -- TEST:
   -- vim.notify('pasteCount: ' .. pasteCount .. ' | yankCount: ' .. yankCount)
   if pasteCount >= 3 then
+    -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
     perBufferState.evidenceCounters.yankHuntingEvidenceCount = perBufferState.evidenceCounters.yankHuntingEvidenceCount
       + 1
     return 'Vim Register tip: `"0p` pastes your most recent yank.'
@@ -245,9 +271,11 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
   return nil
 end
 
---- INFO: JUMPLIST SUGGESTION
----  detection:
----  suggestion:
+-- INFO: JUMPLIST SUGGESTION
+--
+--  detection:
+--  suggestion:
+--
 local function jumplist_suggestion(episode, keys, perBufferState)
   local traveled = math.abs(episode.to.row - episode.from.row)
     + math.abs(episode.to.col - episode.from.col)
@@ -264,14 +292,17 @@ local function jumplist_suggestion(episode, keys, perBufferState)
     return nil
   end
 
+  -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
   perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount = perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount
     + 1
   return 'Navigation tip: use jumplist — `<C-o>` back, `<C-i>` forward. Also ```` returns to last jump.'
 end
 
---- INFO: MARKS SUGGESTION
----  detection:
----  suggestion:
+-- INFO: MARKS SUGGESTION
+--
+--  detection: if Homie's cursor is positioned at same row/col x times (hotspotRevisitThreshold in Config) in same buffer
+--  suggestion: Yo Homie!  Use marks!
+--
 local function marks_suggestion(episode, keys, perBufferState, config)
   local keyString = build_key_string(keys)
   if keyString:find(' m') or keyString:find(" '") or keyString:find(' `') then
@@ -290,6 +321,11 @@ local function marks_suggestion(episode, keys, perBufferState, config)
   return nil
 end
 
+-- INFO: TREESITTER TEXT OBJECTS SUGGESTION
+--
+--  detection: Homie moved over 40 lines (and has Treesitter installed)
+--  suggestion: Yo Homie!  You got Treesitter... Use it!
+--
 local function treesitter_hint(episode, perBufferState)
   local movedLines = math.abs(episode.to.row - episode.from.row)
   if movedLines < 40 then
@@ -306,12 +342,17 @@ local function treesitter_hint(episode, perBufferState)
     return nil
   end
 
+  -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
   perBufferState.evidenceCounters.treesitterMotionEvidenceCount = perBufferState.evidenceCounters.treesitterMotionEvidenceCount
     + 1
   return 'Tip: with Treesitter textobjects, you can jump/select functions/classes.'
 end
 
--- If history(yank ring) exists, hint that recent yanks are there to be devoured!! and registers 0/" may help.
+-- INFO: YANKS EXIST SUGGESTION
+--
+--  detection: Homie has yanked in buffer
+--  suggestion: Yo Homie! You got stuff you have yanked in registers.  Remember, if you delete things, your yank registers can be overwritten!
+--
 local function yank_ring_hint(perBufferState)
   if not perBufferState.yankRing or #perBufferState.yankRing == 0 then
     return nil
@@ -323,78 +364,70 @@ local function yank_ring_hint(perBufferState)
   return 'Yank tip: You have recent yanks! -—Remember `"0p` for last yank. (Your default Vim Register can be overwritten by deletes.)'
 end
 
---- INFO: THE MAIN FUNCTION OF ADVANCED MODE COACHING SUGGESTIONS
+-- ----------------------------------------------------------------------------
+--
+-- INFO: THE MAIN FUNCTION OF ADVANCED MODE COACHING SUGGESTIONS
 --
 ---@param episode {}
 ---@param context {}
 ---@return string|nil, {} -- returns the actual suggestion text for a notification OR returns nil if no suggestions were twiggered, and a table of recent keys.
 function Advanced.suggest(episode, context)
-  --- TEST:
-  -- vim.notify('in Advanced.suggest', 3)
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
 
   local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
 
-  Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
-  local s1 = count_compression(recentKeys)
-  if s1 then
-    return s1, recentKeys
+  -- Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
+  local sugg1 = count_compression(recentKeys)
+  if sugg1 then
+    return sugg1, recentKeys
   end
 
   local operatorRange = detect_last_operator_range()
-  --- TEST:
-  -- vim.notify('operatorRange: ' .. vim.inspect(operatorRange), 4)
-  local s2 = text_object_suggestion(recentKeys, operatorRange, context.get_line)
-  if s2 then
+  local sugg2 = text_object_suggestion(recentKeys, operatorRange, context.get_line)
+  if sugg2 then
     perBufferState.evidenceCounters.textObjectNeedEvidenceCount = perBufferState.evidenceCounters.textObjectNeedEvidenceCount
       + 1
-    return s2, recentKeys
+    return sugg2, recentKeys
   end
+  -- if detect_surround_like(recentKeys, operatorRange) then --
+  --   perBufferState.evidenceCounters.surroundLikeEvidenceCount = perBufferState.evidenceCounters.surroundLikeEvidenceCount
+  --     + 1
+  --   return 'Delimiter tip: use text objects like `ci"`, `ci(`, `ci{` (and `ca...`).', recentKeys
+  -- end
 
-  if detect_surround_like(recentKeys, operatorRange) then
-    perBufferState.evidenceCounters.surroundLikeEvidenceCount = perBufferState.evidenceCounters.surroundLikeEvidenceCount
-      + 1
-    return 'Delimiter tip: use text objects like `ci"`, `ci(`, `ci{` (and `ca...`).', recentKeys
-  end
-
-  --- TEST:
+  -- TEST:
   -- vim.notify('recentKeys ' .. #recentKeys)
-  local s3 = vimregister_suggestion(recentKeys, perBufferState, runtimeState)
-  if not s3 then
-    --- TEST:
-    -- vim.notify('register suggestion(s3) nil')
-  end
-  if s3 then
-    --- TEST:
-    -- vim.notify('register suggestion(s3)' .. s3)
-    return s3, recentKeys
+  local sugg3 = vimregister_suggestion(recentKeys, perBufferState, runtimeState)
+  if sugg3 then
+    return sugg3, recentKeys
   end
 
-  local s4 = jumplist_suggestion(episode, recentKeys, perBufferState)
-  if s4 then
-    return s4, recentKeys
+  local sugg4 = jumplist_suggestion(episode, recentKeys, perBufferState)
+  if sugg4 then
+    return sugg4, recentKeys
   end
 
-  local s5 = marks_suggestion(episode, recentKeys, perBufferState, config)
-  if s5 then
-    return s5, recentKeys
+  local sugg5 = marks_suggestion(episode, recentKeys, perBufferState, config)
+  if sugg5 then
+    return sugg5, recentKeys
   end
 
-  local s6 = treesitter_hint(episode, perBufferState)
-  if s6 then
-    return s6, recentKeys
+  local sugg6 = treesitter_hint(episode, perBufferState)
+  if sugg6 then
+    return sugg6, recentKeys
   end
 
-  local yankHint = yank_ring_hint(perBufferState)
-  if yankHint then
-    return yankHint, recentKeys
+  local sugg7 = yank_ring_hint(perBufferState)
+  if sugg7 then
+    return sugg7, recentKeys
   end
 
-  local s7 = Plugins.recommend(perBufferState, context)
-  if s7 then
-    return s7, recentKeys
+  -- NOTE: This will be pretty complex.  Just a simple start for now.
+  local sugg8 = Plugins.recommend(perBufferState, context)
+  if sugg8 then
+    return sugg8, recentKeys
   end
 
   return nil, recentKeys

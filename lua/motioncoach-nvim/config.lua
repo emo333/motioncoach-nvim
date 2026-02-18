@@ -7,26 +7,22 @@ local defaultConfig = {
   coachingLevel = 1,
   --- default INFO
   notifyLogLevel = vim.log.levels.INFO,
-
   --- default 700ms
   episodeGapMilliseconds = 700,
   --- default 8
-  minimumNaiveCostToCoach = 5,
+  minimumNaiveCostToCoach = 8,
   --- default 2500ms
-  suggestionCooldownMilliseconds = 2000,
+  suggestionCooldownMilliseconds = 2500,
   --- default 3000ms
   undoSuppressionMilliseconds = 3000,
-
   --- default 260
   keyRingBufferSize = 260,
   --- default 2000ms
-  keyPatternWindowMilliseconds = 4000,
-
+  keyPatternWindowMilliseconds = 2000,
   --- default false
   captureCommandLineKeys = false,
   --- default false
   captureInsertModeKeys = false,
-
   --- default 3
   hotspotRevisitThreshold = 3,
 
@@ -34,7 +30,7 @@ local defaultConfig = {
     enabled = true,
     maxTokens = 25,
     collapseRepeats = true,
-    repeatMarker = 'Ã',
+    repeatMarker = 'x',
     filterNoise = true,
     noisePatterns = {
       '^<Ignore>$',
