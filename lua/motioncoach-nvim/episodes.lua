@@ -127,17 +127,12 @@ local function finalize_episode()
     return
   end
 
-  -- TEST:
-  -- vim.notify('FNALIZE EPISODE', 3)
-
   local context = {
     runtimeState = runtimeState,
     perBufferState = State.get_or_create_per_buffer(episode.bufferNumber),
     get_line = get_line,
   }
 
-  --- TODO: temp set beginner OR advanced vs beginner AND advanced
-  -- Always try beginner first (even in advanced) to avoid “too fancy too soon”
   if config.coachingLevel == 1 then
     local beginnerTip = Beginner.suggest(episode, context)
     if beginnerTip then
