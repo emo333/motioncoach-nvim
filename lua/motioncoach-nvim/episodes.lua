@@ -149,17 +149,14 @@ local function finalize_episode()
     end
   end
 end
-
+-- 💩
 local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
-  -- TEST:
-  -- vim.notify('START EPISODE', 3)
-
-  -- Get info for the current window
-  local current_window_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
-  vim.notify(vim.inspect(current_window_info))
-  -- Get info for the current buffer
-  local current_buffer_info = vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]
-  vim.notify(vim.inspect(current_buffer_info))
+  --
+  -- TEST: Get info for the current window
+  -- vim.notify(vim.inspect(vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]))
+  -- TEST: Get info for the current buffer
+  -- local current_buffer_info = vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]
+  -- vim.notify(vim.inspect(vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]))
 
   local runtimeState = State.get()
   runtimeState.currentEpisode = {
