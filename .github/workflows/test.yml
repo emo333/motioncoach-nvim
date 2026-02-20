@@ -12,8 +12,12 @@ jobs:
       - name: Install Plenary.nvim
         run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/test/start/plenary.nvim
       - name: Run Plenary Tests
-        run: nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
+        run: |
+          set -o pipefail
+          nvim --headless -c "PlenaryBustedDirectory spec/" 2>&1 | tee test-log.txt
+
       - name: Upload Test Log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-log
