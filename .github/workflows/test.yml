@@ -11,22 +11,10 @@ jobs:
         run: sudo apt-get install -y neovim
       - name: Install Plenary.nvim
         run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/test/start/plenary.nvim
-      - name: Install Luarocks and luacov (user local)
-        run: |
-          sudo apt-get install -y luarocks
-          luarocks install --local luacov
-      - name: Add .luarocks/bin to PATH
-        run: echo "$HOME/.luarocks/bin" >> $GITHUB_PATH
-      - name: Run Tests with Coverage
-        env:
-          PATH: ${{ env.HOME }}/.luarocks/bin:${{ env.PATH }}
-        run: |
-          export LUA_PATH=';;./lua/?.lua'
-          $HOME/.luarocks/bin/luacov nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
-      - name: Upload Artifacts
+      - name: Run Plenary Tests
+        run: nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
+      - name: Upload Test Log
         uses: actions/upload-artifact@v4
         with:
-          name: test-outputs
-          path: |
-            test-log.txt
-            luacov.stats.out
+          name: test-log
+          path: test-log.txt
