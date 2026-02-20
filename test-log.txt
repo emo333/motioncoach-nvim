@@ -1,0 +1,159 @@
+Scheduling: spec/motioncoach-nvim_spec.lua
+Scheduling: spec/utils_spec.lua
+Scheduling: spec/state_spec.lua
+Scheduling: spec/config_spec.lua
+Scheduling: spec/keylog_spec.lua
+Scheduling: spec/formatter_spec.lua
+Scheduling: spec/notify_spec.lua
+Scheduling: spec/vimregisters_spec.lua
+Scheduling: spec/init_spec.lua
+Scheduling: spec/episodes_spec.lua
+Scheduling: spec/suggestions/advanced_spec.lua
+Scheduling: spec/suggestions/beginner_spec.lua
+Scheduling: spec/suggestions/plugins_spec.lua
+Scheduling: spec/help/vim-help_spec.lua
+Scheduling: spec/help/motioncoach-help_spec.lua
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/motioncoach-nvim_spec.lua	
+[32mSuccess[0m	||	neovim plugin work as expect	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/state_spec.lua	
+[32mSuccess[0m	||	state.lua get returns runtimeState table	
+[32mSuccess[0m	||	state.lua get_or_create_per_buffer returns buffer state	
+[32mSuccess[0m	||	state.lua get_or_create_per_buffer returns same object for same buffer	
+	
+[32mSuccess: [0m	3	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/keylog_spec.lua	
+[32mSuccess[0m	||	keylog.lua key_exists_in_keyring finds key	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/help/vim-help_spec.lua	
+[32mSuccess[0m	||	help.vim-help.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/config_spec.lua	
+[32mSuccess[0m	||	config.lua get returns activeConfig table	
+[32mSuccess[0m	||	config.lua apply updates activeConfig	
+	
+[32mSuccess: [0m	2	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/notify_spec.lua	
+[32mSuccess[0m	||	notify.lua format_message returns string	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/vimregisters_spec.lua	
+[32mSuccess[0m	||	vimregisters.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/help/motioncoach-help_spec.lua	
+[32mSuccess[0m	||	help.motioncoach-help.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/utils_spec.lua	
+[32mSuccess[0m	||	utils.lua clampNumber returns min if value is less	
+[32mSuccess[0m	||	utils.lua clampNumber returns max if value is more	
+[32mSuccess[0m	||	utils.lua clampNumber returns value if in range	
+[32mSuccess[0m	||	utils.lua now_ms returns a positive integer	
+	
+[32mSuccess: [0m	4	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/suggestions/plugins_spec.lua	
+[32mSuccess[0m	||	suggestions.plugins.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/formatter_spec.lua	
+[32mSuccess[0m	||	formatter.lua format_keys_for_display returns concatenated string for given tokens	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/init_spec.lua	
+[32mSuccess[0m	||	init.lua setup is callable	
+[32mSuccess[0m	||	init.lua level returns an integer	
+	
+[32mSuccess: [0m	2	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+Beginner coaching ON (level 1).
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/episodes_spec.lua	
+[32mSuccess[0m	||	episodes.lua set_coaching_level clamps and sets correctly	
+[32mSuccess[0m	||	episodes.lua install_autocmds is callable	
+	
+[32mSuccess: [0m	2	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/suggestions/advanced_spec.lua	
+[32mSuccess[0m	||	suggestions.advanced.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
+
+========================================	
+Testing: 	/home/mitch/PROJECTS/NEOVIM/motioncoach-nvim/spec/suggestions/beginner_spec.lua	
+[32mSuccess[0m	||	suggestions.beginner.lua exists as a table	
+	
+[32mSuccess: [0m	1	
+[31mFailed : [0m	0	
+[31mErrors : [0m	0	
+========================================	
