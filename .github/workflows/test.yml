@@ -11,8 +11,12 @@ jobs:
         run: sudo apt-get install -y neovim
       - name: Install Plenary.nvim
         run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/test/start/plenary.nvim
-      - name: Install Luarocks and luacov
-        run: sudo apt-get install -y luarocks && luarocks install luacov
+      - name: Install Luarocks and luacov (user local)
+        run: |
+          sudo apt-get install -y luarocks
+          luarocks install --local luacov
+      - name: Add .luarocks/bin to PATH
+        run: echo "$HOME/.luarocks/bin" >> $GITHUB_PATH
       - name: Run Tests with Coverage
         run: |
           export LUA_PATH=';;./lua/?.lua'
