@@ -1,0 +1,13 @@
+local Config = require('motioncoach-nvim.config')
+
+describe('config.lua', function()
+  it('get returns activeConfig table', function()
+    local config = Config.get()
+    assert.is_table(config)
+    assert(config.coachingLevel ~= nil)
+  end)
+  it('apply updates activeConfig', function()
+    Config.apply({ coachingLevel = 2 })
+    assert.are.equal(Config.get().coachingLevel, 2)
+  end)
+end)

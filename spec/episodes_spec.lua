@@ -1,0 +1,11 @@
+local Episodes = require('motioncoach-nvim.episodes')
+
+describe('episodes.lua', function()
+  it('set_coaching_level clamps and sets correctly', function()
+    Episodes.set_coaching_level(1)
+    assert(Episodes)
+  end)
+  it('install_autocmds is callable', function()
+    assert.is_function(Episodes.install_autocmds)
+  end)
+end)

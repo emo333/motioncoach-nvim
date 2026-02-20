@@ -1,38 +1,26 @@
-name: Busted Tests with UI Reporting
+name: Neovim Plugin Tests
 
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    permissions:
-      checks: write # Required to publish the test report to GitHub Checks
-      pull-requests: write # Required for PR comments
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Lua
-        uses: leafo/gh-actions-lua@v10
+      - uses: actions/checkout@v4
+      - name: Install Neovim
+        run: sudo apt-get install -y neovim
+      - name: Install Plenary.nvim
+        run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/test/start/plenary.nvim
+      - name: Install Luarocks and luacov
+        run: sudo apt-get install -y luarocks && luarocks install luacov
+      - name: Run Tests with Coverage
+        run: |
+          export LUA_PATH=';;./lua/?.lua'
+          luacov runner -- nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          luaVersion: "5.1"
-
-      - name: Setup Luarocks
-        uses: leafo/gh-actions-luarocks@v4
-
-      - name: Install Busted
-        run: luarocks install busted
-
-      - name: Run Tests (Generate JUnit XML)
-        # Busted supports JUnit output natively.
-        # The '|| true' ensures the next step runs even if tests fail.
-        run: busted --output=junit > test-results.xml || true
-
-      - name: Publish Test Report
-        uses: dorny/test-reporter@v1
-        with:
-          name: Busted Test Results
-          path: test-results.xml
-          reporter: java-junit # Uses standard JUnit format
-
+          name: test-outputs
+          path: |
+            test-log.txt
+            luacov.stats.out
