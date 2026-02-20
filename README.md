@@ -1,3 +1,5 @@
+<!-- markdownlint-disable-file -->
+
 # **{ THIS PLUGIN IS NOT IN A PRODUCTION STATE !!! }**
 
 # **ONLY BEGINNER MODE is operational currently**
@@ -16,11 +18,9 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 - layered
   so beginner peeps aren’t overwhelmed and advanced peeps aren't annoyed.
 
-All suggestions are delivered via a _"wrapped"_ **`vim.notify`**.
-
+* All suggestions are delivered via a _"wrapped"_ **`vim.notify`**.
 
 https://github.com/user-attachments/assets/349e25e9-57d1-453b-9e96-c07a1192d4c5
-
 
 ---
 
@@ -40,7 +40,12 @@ Beginner advice is always preferred over advanced advice, even at level 2.
 
 ## Features
 
-### Beginner Coaching (Level 1)
+### Coaching Levels
+
+- Selectable with Keymaps
+- Apply to Neovim session
+
+#### Beginner Coaching (Level 1)
 
 - Count compression (`10j`, `5k`)
 - Scroll suggestions (`<C-d>`, `<C-u>`)
@@ -50,7 +55,7 @@ Beginner advice is always preferred over advanced advice, even at level 2.
 
 ---
 
-### Advanced Coaching (Level 2)
+#### Advanced Coaching (Level 2)
 
 - Key pattern analysis (via `vim.on_key`)
 - State-diff validation (cursor movement, operators, undo)
@@ -66,7 +71,11 @@ Beginner advice is always preferred over advanced advice, even at level 2.
 - Optional Treesitter textobject hints
 - Configurable plugin recommendations
 
-Only **advanced mode** shows the formatted key history.
+---
+
+#### Coaching Off (Level 0)
+
+- Coaching is disabled
 
 ---
 
@@ -79,7 +88,7 @@ Only **advanced mode** shows the formatted key history.
   "emo333/motioncoach-nvim",
   config = function()
     require("motioncoach-nvim").setup({
-      coachingLevel = 1,
+      coachingLevel = 1, -- set to what you want to be your default
     })
   end
 }
@@ -95,9 +104,7 @@ Only **advanced mode** shows the formatted key history.
 
 `:MotionCoachAdvanced`
 
-`:MotionCoachToggle`
-
-`:MotionCoachLevel 0|1|2`
+`:MotionCoachLevel` `0|1|2`
 
 ---
 
@@ -190,16 +197,6 @@ By default, `motioncoach-nvim`:
 
 ❌ Does not capture insert-mode keys
 
-✅ Uses a small rolling ring buffer for key patterns
-
-✅ Captures yank contents locally only
-
-❌ Never displays yank contents
-
-❌ Never writes anything to disk
-
-❌ Never sends data externally
-
 You can override these if you want:
 
 ```lua
@@ -210,21 +207,27 @@ captureInsertModeKeys = false,
 
 ```
 
+✅ Uses a small rolling ring buffer for key patterns
+
+✅ Captures yank contents locally only
+
+❌ Never writes anything to disk
+
+❌ Never sends data externally
+
 ### Typed Keys Display (Advanced Only)
 
 - In advanced mode, notifications include:
 
 ```
-You typed: j×12 w d i w
+  You typed: j×12 w d i w
 ```
 
-### Yank History
+### Yank History (Advanced Only)
 
 `motioncoach-nvim` captures yank events via `TextYankPost` and stores them in a per-buffer yank ring.
 
 - This is used only to improve coaching quality
-
-- Yank contents are never displayed
 
 - Yank contents never leave memory
 
@@ -236,7 +239,7 @@ You typed: j×12 w d i w
 
 - collapses repeats (j×12)
 
-- truncates long histories
+- truncates long "Episode" histories
 
 Configure it like this:
 
@@ -269,9 +272,9 @@ require("motioncoach-nvim").setup({
 
 ```lua
 require("motioncoach-nvim").setup({
-pluginRecommendations = {
-enabled = false,
-}
+  pluginRecommendations = {
+    enabled = false,
+  }
 })
 ```
 
@@ -279,11 +282,11 @@ enabled = false,
 
 ```lua
 require("motioncoach-nvim").setup({
-pluginRecommendations = {
-items = {
-surround = { enabled = false },
-}
-}
+  pluginRecommendations = {
+    items = {
+      surround = { enabled = false },
+    }
+  }
 })
 ```
 
@@ -295,41 +298,19 @@ For long-term evolution, you can supply a provider function that decides recomme
 
 ```lua
 require("motioncoach-nvim").setup({
-pluginRecommendations = {
-provider = function(evidenceCounters, context)
-if (evidenceCounters.surroundLikeEvidenceCount or 0) >= 6 then
-evidenceCounters.surroundLikeEvidenceCount = 0
-return "Plugin idea: consider mini.surround or nvim-surround."
-end
-return nil
-end
-}
+  pluginRecommendations = {
+    provider = function(evidenceCounters, context)
+      if (evidenceCounters.surroundLikeEvidenceCount or 0) >= 6 then
+        evidenceCounters.surroundLikeEvidenceCount = 0
+        return "Plugin idea: consider mini.surround or nvim-surround."
+      end
+      return nil
+    end
+  }
 })
 ```
 
 - The provider runs before built-in defaults.
-
----
-
-## Dev Notes
-
-- Key logging is lightweight and deferred
-
-- Heavy analysis happens only at episode boundaries
-
-- Undo actions temporarily suppress suggestions
-
-- Mappings and plugins may affect key visibility — state diffs are always preferred
-
-- Suggestions are intentionally conservative
-
----
-
-## Philosophy
-
-- Learn the next better motion — not the perfect one.
-
-- `motioncoach-nvim` is meant to grow with you and once you got your Vim Motions down, remove it :)
 
 ---
 
