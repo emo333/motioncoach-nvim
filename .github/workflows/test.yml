@@ -18,9 +18,11 @@ jobs:
       - name: Add .luarocks/bin to PATH
         run: echo "$HOME/.luarocks/bin" >> $GITHUB_PATH
       - name: Run Tests with Coverage
+        env:
+          PATH: ${{ env.HOME }}/.luarocks/bin:${{ env.PATH }}
         run: |
           export LUA_PATH=';;./lua/?.lua'
-          luacov runner -- nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
+          $HOME/.luarocks/bin/luacov nvim --headless -c "PlenaryBustedDirectory spec/" > test-log.txt
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
