@@ -23,7 +23,13 @@ end
 
 ---@return number now_ms current time in milliseconds
 function Utils.now_ms()
-  return math.floor(vim.uv.hrtime() / 1e6)
+  local uv = vim.uv or vim.loop -- if older neovim version, use vim.loop
+  local hrtime = uv and uv.hrtime and uv.hrtime() or nil
+  print('[MOTIONCOACH DEBUG] vim.uv:', vim.uv, ', vim.loop:', vim.loop, ', hrtime:', hrtime)
+  if hrtime then
+    return math.floor(hrtime / 1e6)
+  end
+  error('No uv.hrtime() available (unsupported Neovim version?)')
 end
 
 return Utils

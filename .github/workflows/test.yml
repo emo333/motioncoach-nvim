@@ -11,10 +11,21 @@ jobs:
         run: sudo apt-get install -y neovim
       - name: Install Plenary.nvim
         run: git clone --depth=1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/test/start/plenary.nvim
+
+      - name: Neovim Version
+        run: nvim --version
+
+      - name: List Test Files
+        run: ls -R spec
+
       - name: Run Plenary Tests
         run: |
           set -o pipefail
           nvim --headless -c "PlenaryBustedDirectory spec/" 2>&1 | tee test-log.txt
+
+      - name: Show Test Log Output
+        if: always()
+        run: cat test-log.txt
 
       - name: Upload Test Log
         if: always()
@@ -22,3 +33,4 @@ jobs:
         with:
           name: test-log
           path: test-log.txt
+
