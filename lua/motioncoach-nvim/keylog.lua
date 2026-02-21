@@ -1,3 +1,8 @@
+--                __  _                             __
+--    __ _  ___  / /_(_)__  ___  _______  ___ _____/ /
+--   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
+--  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
+--  ---------------------------------------------------
 ---@class KeyLog
 ---@field Keylog.get_recent_keys function
 ---@field Keylog.install_if_needed function
@@ -19,7 +24,7 @@ local function ring_push(token)
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
   -- vim.notify('here in ring_push')
   -- vim.notify(#runtimeState.keyRingBuffer)
-  local msg = tostring(vim.fn.bufnr())
+  -- local msg = tostring(vim.fn.bufnr())
   -- TEST:
   -- vim.notify('runtimeState.keyRingBuffer' .. msg)
 end

@@ -1,3 +1,4 @@
+---@diagnostic disable
 local Episodes = require('motioncoach-nvim.episodes')
 
 describe('episodes.lua', function()

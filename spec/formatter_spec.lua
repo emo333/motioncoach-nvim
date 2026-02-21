@@ -1,3 +1,4 @@
+---@diagnostic disable
 local Formatter = require('motioncoach-nvim.formatter')
 
 describe('formatter.lua', function()

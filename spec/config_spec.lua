@@ -1,3 +1,4 @@
+---@diagnostic disable
 local Config = require('motioncoach-nvim.config')
 
 describe('config.lua', function()

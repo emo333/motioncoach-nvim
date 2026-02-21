@@ -1,3 +1,4 @@
+---@diagnostic disable
 local vim_help = require('motioncoach-nvim.help.vim-help')
 
 describe('help.vim-help.lua', function()

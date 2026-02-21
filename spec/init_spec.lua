@@ -1,3 +1,4 @@
+---@diagnostic disable
 local plugin = require('motioncoach-nvim')
 
 describe('init.lua', function()

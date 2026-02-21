@@ -1,3 +1,4 @@
+---@diagnostic disable
 local State = require('motioncoach-nvim.state')
 
 describe('state.lua', function()

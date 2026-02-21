@@ -1,3 +1,4 @@
+---@diagnostic disable
 local Keylog = require('motioncoach-nvim.keylog')
 
 describe('keylog.lua', function()

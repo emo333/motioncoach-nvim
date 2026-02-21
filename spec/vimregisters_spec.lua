@@ -1,3 +1,4 @@
+---@diagnostic disable
 local VimRegisters = require('motioncoach-nvim.vimregisters')
 
 describe('vimregisters.lua', function()

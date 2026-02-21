@@ -1,3 +1,4 @@
+---@diagnostic disable
 local motioncoach_help = require('motioncoach-nvim.help.motioncoach-help')
 
 describe('help.motioncoach-help.lua', function()

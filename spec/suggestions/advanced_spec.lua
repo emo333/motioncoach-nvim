@@ -1,3 +1,4 @@
+---@diagnostic disable
 local advanced = require('motioncoach-nvim.suggestions.advanced')
 
 describe('suggestions.advanced.lua', function()

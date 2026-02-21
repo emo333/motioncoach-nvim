@@ -1,3 +1,4 @@
+---@diagnostic disable
 local beginner = require('motioncoach-nvim.suggestions.beginner')
 
 describe('suggestions.beginner.lua', function()

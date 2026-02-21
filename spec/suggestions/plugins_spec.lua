@@ -1,3 +1,4 @@
+---@diagnostic disable
 local plugins = require('motioncoach-nvim.suggestions.plugins')
 
 describe('suggestions.plugins.lua', function()

@@ -1,3 +1,8 @@
+--                __  _                             __
+--    __ _  ___  / /_(_)__  ___  _______  ___ _____/ /
+--   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
+--  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
+--  ---------------------------------------------------
 -- TODO: get back on this wayyyyyyyy down the road...
 -- INFO: Plugin suggestions
 -- e.g. "Homie, you are doing a lot of jumping around.  A good plugin to consider for jumping around is 'Harpoon2'"

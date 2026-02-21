@@ -1,19 +1,11 @@
+--                __  _                             __
+--    __ _  ___  / /_(_)__  ___  _______  ___ _____/ /
+--   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
+--  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
+--  ---------------------------------------------------
 local Beginner = {}
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
-
-local function build_key_string(keys)
-  return ' ' .. table.concat(keys, ' ') .. ' '
-end
-
-local function has_any_key(keys, keySet) --- Do it have keys??
-  for _, k in ipairs(keys) do
-    if keySet[k] then
-      return true
-    end
-  end
-  return false
-end
 
 ---@return {} | nil
 local function detect_last_operator_range() --- Gets the range of the last operator and puts it in a nice little table
@@ -34,36 +26,49 @@ local function detect_last_operator_range() --- Gets the range of the last opera
   }
 end
 
--- TODO: may not need this function in this module... only need it if we going to send Homie his keystrokes.
+--  TODO: may not need these functions in this module... only need it if we going to send Homie his keystrokes.
 --
----@function --turns concurrent keys into single string.  example: `h`,`h`,`h`,`h` ~ `4h`
----@return string | nil
-local function count_compression(keys)
-  local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
-  local lastToken, repeatCount = nil, 0
-
-  for _, token in ipairs(keys) do
-    if allowed[token] then
-      if token == lastToken then
-        repeatCount = repeatCount + 1
-      else
-        lastToken, repeatCount = token, 1
-      end
-    else
-      lastToken, repeatCount = nil, 0
-    end
-  end
-
-  if lastToken and repeatCount >= 5 then
-    return ('You pressed `%s` %d times. Try `%d%s` (count + motion).'):format(
-      lastToken,
-      repeatCount,
-      repeatCount,
-      lastToken
-    )
-  end
-  return nil
-end
+-- local function build_key_string(keys)
+--   return ' ' .. table.concat(keys, ' ') .. ' '
+-- end
+--
+-- local function has_any_key(keys, keySet) --- Do it have keys??
+--   for _, k in ipairs(keys) do
+--     if keySet[k] then
+--       return true
+--     end
+--   end
+--   return false
+-- end
+--
+-- ---@function --turns concurrent keys into single string.  example: `h`,`h`,`h`,`h` ~ `4h`
+-- ---@return string | nil
+-- local function count_compression(keys)
+--   local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
+--   local lastToken, repeatCount = nil, 0
+--
+--   for _, token in ipairs(keys) do
+--     if allowed[token] then
+--       if token == lastToken then
+--         repeatCount = repeatCount + 1
+--       else
+--         lastToken, repeatCount = token, 1
+--       end
+--     else
+--       lastToken, repeatCount = nil, 0
+--     end
+--   end
+--
+--   if lastToken and repeatCount >= 5 then
+--     return ('You pressed `%s` %d times. Try `%d%s` (count + motion).'):format(
+--       lastToken,
+--       repeatCount,
+--       repeatCount,
+--       lastToken
+--     )
+--   end
+--   return nil
+-- end
 
 ---@param lineText string
 ---@return number | nil

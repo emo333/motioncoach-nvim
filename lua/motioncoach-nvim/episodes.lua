@@ -1,3 +1,8 @@
+--                __  _                             __
+--    __ _  ___  / /_(_)__  ___  _______  ___ _____/ /
+--   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
+--  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
+--  ---------------------------------------------------
 -- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
 -- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
 

@@ -1,3 +1,4 @@
+---@diagnostic disable
 local Notify = require('motioncoach-nvim.notify')
 
 describe('notify.lua', function()
