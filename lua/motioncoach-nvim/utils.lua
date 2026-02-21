@@ -25,7 +25,7 @@ end
 function Utils.now_ms()
   local uv = vim.uv or vim.loop -- if older neovim version, use vim.loop
   local hrtime = uv and uv.hrtime and uv.hrtime() or nil
-  print('[MOTIONCOACH DEBUG] vim.uv:', vim.uv, ', vim.loop:', vim.loop, ', hrtime:', hrtime)
+  -- print('[MOTIONCOACH DEBUG] vim.uv:', vim.uv, ', vim.loop:', vim.loop, ', hrtime:', hrtime)
   if hrtime then
     return math.floor(hrtime / 1e6)
   end

@@ -109,6 +109,9 @@ end
 local function finalize_episode()
   local config = Config.get()
   local runtimeState = State.get()
+  -- local bufferNumber = vim.api.nvim_get_current_buf()
+  -- local perBufferState = State.get_or_create_per_buffer(bufferNumber)
+
   local episode = runtimeState.currentEpisode
 
   runtimeState.currentEpisode = nil
@@ -123,6 +126,7 @@ local function finalize_episode()
   end
 
   local naive = estimate_naive_cost(episode)
+  -- vim.notify(tostring(naive))
   if naive < config.minimumNaiveCostToCoach then
     return
   end
@@ -193,14 +197,13 @@ local function on_cursor_moved()
   local bufferNumber = vim.api.nvim_get_current_buf()
   update_undo_suppression(bufferNumber)
 
-  -- TEST:
-  -- vim.notify(tostring(bufferNumber), 0)
   local currentTimeMs = Utils.now_ms()
   local cursorPos = get_cursor()
 
   if not runtimeState.currentEpisode then
     start_episode(bufferNumber, cursorPos, currentTimeMs, currentMode)
-    return
+    -- BUG: This may be a problem.  Might need to return here
+    -- return
   end
 
   ---@class episode
@@ -281,7 +284,7 @@ function Episodes.set_coaching_level(level)
   if level == 0 then
     Keylog.uninstall_if_needed()
     finalize_episode()
-    notify('Coaching OFF (level 0).')
+    notify('Coaching OFF')
   elseif level == 1 then
     Keylog.install_if_needed()
     notify('Beginner coaching ON (level 1).')
@@ -291,15 +294,22 @@ function Episodes.set_coaching_level(level)
   end
 end
 
--- TODO: prob not needed
---
--- function Episodes.toggle_level()
---   local config = Config.get()
---   Episodes.set_coaching_level((config.coachingLevel + 1) % 3)
--- end
-
 function Episodes.install_autocmds()
   local augroup = vim.api.nvim_create_augroup('MotionCoach', { clear = true })
+
+  vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter' }, {
+    group = augroup,
+    callback = function()
+      vim.keymap.set('n', '<ScrollWheelUp>', function()
+        vim.notify_once('Scrolling with mouse is cheating...')
+        return '<ScrollWheelUp>'
+      end, { expr = true, noremap = true, buffer = true })
+      vim.keymap.set('n', '<ScrollWheelDown>', function()
+        vim.notify_once('Scrolling with mouse is cheating...')
+        return '<ScrollWheelDown>'
+      end, { expr = true, noremap = true, silent = true, buffer = true })
+    end,
+  })
 
   vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
     group = augroup,
@@ -315,6 +325,7 @@ function Episodes.install_autocmds()
     group = augroup,
     callback = function()
       finalize_episode()
+      vim._notify_once_cache = {}
     end,
   })
 
@@ -322,8 +333,6 @@ function Episodes.install_autocmds()
     group = augroup,
     callback = function(ev)
       VimRegisters.capture_yank(ev)
-
-      -- vim.notify('episodes:264 event = ' .. vim.inspect(ev.data))
     end,
   })
 
@@ -344,9 +353,6 @@ function Episodes.install_autocmds()
   vim.api.nvim_create_user_command('MotionCoachAdvanced', function()
     Episodes.set_coaching_level(2)
   end, {})
-  -- vim.api.nvim_create_user_command('MotionCoachToggle', function()
-  -- Episodes.toggle_level()
-  -- end, {})
   vim.api.nvim_create_user_command('MotionCoachLevel', function(opts)
     Episodes.set_coaching_level(tonumber(opts.args))
   end, {

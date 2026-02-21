@@ -100,22 +100,17 @@ function Beginner.suggest(episode, context)
 
     local first_nonblank_col_in_line = first_nonblank_col(destinationLineText)
     if destinationLineText:match('%S') and to.col == first_nonblank_col_in_line then
-      -- FIX: if last keys{from keylogger}  were 'hhhhh' or 'bbbbb' or 'BBBBB'
       return 'Try `^` to jump to first non-blank character on the line.'
     end
 
     if #destinationLineText > 0 and to.col >= (#destinationLineText - 1) then
-      -- FIX: if last keys{from keylogger} were 'eeeee' or 'EEEEE' or 'lllll'
       return 'Try `$` to jump to end of line.'
     end
   end
 
   -- TODO: make user configurable 7
   if absLineDelta == 0 and absColDelta >= 7 then
-    -- FIX: if last keys{from keylogger} were NOT 'w' or 'b' or 'e' 'W' or 'B' or 'E'
-    if Keylog.get_recent_keys(2000) then
-    end
-    return 'For long horizontal moves, you can move by words with:\n `w`/`b`/`e`/`W`/`B`/`E`\n  Also, you can use a count (`8h` or `16l`).'
+    return 'For long horizontal moves, you can move by words with:\n ` w ` or ` b ` or ` e `\n ( ` W ` or ` B ` or ` E `\n  Or Can prefix count (` 8h ` or ` 16l `)'
     -- TODO: for advanvced mode suggest using `f`/`F` (maybe this is where a plugin check is done to see if Homie has flash.nvim installed and only if so, suggest using `s`+{a-Z0-9})
   end
 
@@ -133,19 +128,20 @@ function Beginner.suggest(episode, context)
   -- TODO: make user configurable 6 and 60
   if absLineDelta >= 6 and absLineDelta < 60 then
     local motion = (lineDelta > 0) and 'j' or 'k'
-    local formattedMotion = ('Try `%d%s` to move %d lines in one go.'):format(
-      absLineDelta,
+    local formattedMotion = ('Try ` %d%s ` to move %d lines'):format(
+      absLineDelta + 1,
       motion,
-      absLineDelta
+      absLineDelta + 1
     )
     -- TODO: check for relativelinenumbers turned on
-    return formattedMotion
-      .. '\n\n'
-      .. [[     * Consider using `Relative Line Numbers`
+    local rln = ''
+    if not vim.wo.relativenumber then
+      rln = '\n\n'
+        .. [[  * Consider using 'Relative Line Numbers'
 
-       - Then you can see the count of lines "from the line your are on".
-
-       - This is more effective when your target line is within view of window.]]
+    - to see the count of lines from the line your are on]]
+    end
+    return formattedMotion .. rln
   end
 
   if absLineDelta >= 200 then

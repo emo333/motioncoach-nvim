@@ -10,7 +10,7 @@ local defaultConfig = {
   --- default 700ms
   episodeGapMilliseconds = 700,
   --- default 8
-  minimumNaiveCostToCoach = 8,
+  minimumNaiveCostToCoach = 4,
   --- default 2500ms
   suggestionCooldownMilliseconds = 2500,
   --- default 3000ms
