@@ -8,7 +8,7 @@
 
 # `motioncoach-nvim`
 
-`motioncoach-nvim` is a pure **Lua** Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
+`motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
 
 It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
@@ -20,8 +20,6 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
 * All suggestions are delivered via a _"wrapped"_ **`vim.notify`**.
 
-https://github.com/user-attachments/assets/349e25e9-57d1-453b-9e96-c07a1192d4c5
-
 ---
 
 ## Coaching Levels
@@ -31,10 +29,8 @@ https://github.com/user-attachments/assets/349e25e9-57d1-453b-9e96-c07a1192d4c5
 - **Level 0** — Off
 - **Level 1** — Beginner coaching
 - **Level 2** — Advanced coaching
-  - Includes deeper motion advice
+  - Includes deeper motion suggestions and command suggestions
   - Shows a formatted **“You typed:”** line for reflection
-
-Beginner advice is always preferred over advanced advice, even at level 2.
 
 ---
 
@@ -111,8 +107,7 @@ Beginner advice is always preferred over advanced advice, even at level 2.
 ## Default Keymaps
 
 ```lua
-  vim.keymap.set('n', '<leader>mc', function()
-    require('motioncoach-nvim').toggle()
+  vim.keymap.set('n', '<leader>m', '[M]otion Coach -->')
   end, { desc = 'MotionCoach cycle level' })
   vim.keymap.set('n', '<leader>m0', function()
     require('motioncoach-nvim').set_level(0)
@@ -137,7 +132,7 @@ require("motioncoach-nvim").setup({
 })
 ```
 
-### Notification Configuration (Optional)
+### Recommended Notification Configuration (Optional)
 
 - either add this to your snacks.nvim configuration or;
   add this as a plugin (eg. `snacks.lua`):
@@ -197,12 +192,12 @@ By default, `motioncoach-nvim`:
 
 ❌ Does not capture insert-mode keys
 
-You can override these if you want:
+You can override these if you want in order to get more Advance suggestions:
 
 ```lua
 require("motioncoach-nvim").setup({
-captureCommandLineKeys = false,
-captureInsertModeKeys = false,
+  captureCommandLineKeys = false,
+  captureInsertModeKeys = false,
 })
 
 ```
@@ -227,7 +222,7 @@ captureInsertModeKeys = false,
 
 `motioncoach-nvim` captures yank events via `TextYankPost` and stores them in a per-buffer yank ring.
 
-- This is used only to improve coaching quality
+- This is used to suggest yank( or cut/delete )/register technique suggestions
 
 - Yank contents never leave memory
 
@@ -241,7 +236,7 @@ captureInsertModeKeys = false,
 
 - truncates long "Episode" histories
 
-Configure it like this:
+- Configurable:
 
 ```lua
 require("motioncoach-nvim").setup({
@@ -257,7 +252,7 @@ require("motioncoach-nvim").setup({
 
 ## Plugin Recommendations { WORK IN PROGRESS }
 
-`motioncoach.nvim` can suggest plugins only after repeated evidence and only in advanced mode.
+`motioncoach.nvim` can suggest plugins only after repeated evidence(within a Neovim session) and only in advanced mode.
 
 - Recommendations are:
   - Fully configurable
@@ -268,7 +263,7 @@ require("motioncoach-nvim").setup({
 
 ### Optional
 
-- Disable all plugin recommendations:
+- Disable all plugin recommendations(Default):
 
 ```lua
 require("motioncoach-nvim").setup({
@@ -292,7 +287,7 @@ require("motioncoach-nvim").setup({
 
 ---
 
-## Provider Hook { WORK IN PROGRESS }
+## Provider Hook { FUTURE FEATURE}
 
 For long-term evolution, you can supply a provider function that decides recommendations dynamically:
 
@@ -321,7 +316,7 @@ require("motioncoach-nvim").setup({
   either as side duties inherent to work or as hobby at home.
 - Vim/NeoVim/Lua are all new to me ( started delving into these around November 2025 ).
 - I started this project based on my own desire to have something "inside" NeoVim to remind/assist/suggest/coach me learning Vim motions.
-- I used ai to assist me developing this. ( about 50/50(impressed/disappointed) on the ai results ).
+- I used ai to assist me developing this. But just when I needed to get over a hump.
 
 ---
 
