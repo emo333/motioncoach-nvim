@@ -4,7 +4,7 @@
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
 ---Configuration Module
-local Config = {}
+local M = {}
 
 -- TODO: reconsider (get opinions of avid vim users) all these defaults before publishing
 local defaultConfig = {
@@ -91,14 +91,14 @@ local defaultConfig = {
 local activeConfig = vim.deepcopy(defaultConfig)
 
 ---Get the Active Configuration
-function Config.get()
+function M.get()
   return activeConfig
 end
 
 ---Apply Homie's custom configuration to the Active Configuration
 ---@param userConfig {} Homie's custom configuration
-function Config.apply(userConfig)
+function M.apply(userConfig)
   activeConfig = vim.tbl_deep_extend('force', activeConfig, userConfig)
 end
 
-return Config
+return M

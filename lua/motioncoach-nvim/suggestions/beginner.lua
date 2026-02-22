@@ -3,7 +3,15 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
-local Beginner = {}
+
+local M = {}
+
+---@alias Episode {value: table, context: {row: number, col: number}}
+---@alias Context {value: table, context: {row: number, col: number}}
+
+---@class Beginner
+---@field suggest (fun(episode: Episode, context: Context): string?)
+
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 
@@ -77,12 +85,8 @@ local function first_nonblank_col(lineText)
   return (endingIndex or 0)
 end
 
----@class Beginner.suggest
----@field suggest function
----@param episode {}
----@param context {}
 ---@return string | nil # The suggestion message | nil
-function Beginner.suggest(episode, context)
+function M.suggest(episode, context)
   local config = Config.get()
   -- local runtimeState = context.runtimeState
   -- local perBufferState = context.perBufferState
@@ -120,6 +124,8 @@ function Beginner.suggest(episode, context)
   end
 
   -------------------- VERTICAL MOTIONS
+
+  -- TODO: check for folds(closed) between from.row and to.row and subtract folddelta from delta
 
   local total_lines = vim.api.nvim_buf_line_count(0)
   if total_lines == to.row or to.row == 1 then
@@ -164,4 +170,4 @@ function Beginner.suggest(episode, context)
   return nil
 end
 
-return Beginner
+return M

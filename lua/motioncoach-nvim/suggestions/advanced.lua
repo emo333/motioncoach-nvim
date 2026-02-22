@@ -4,7 +4,7 @@
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
 ---@class Advanced
-local Advanced = {}
+local M = {}
 
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
@@ -92,6 +92,9 @@ local function count_compression(keys)
       lastToken
     )
   end
+
+  vim.notify('returning nil from count_compression')
+
   return nil
 end
 
@@ -110,8 +113,9 @@ end
 --
 local function text_object_suggestion(keys, operatorRange, get_line)
   -- TEST:
-  -- vim.notify('keys: ' .. vim.inspect(keys))
-  -- vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
+  vim.notify('keys: ' .. vim.inspect(keys))
+  vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
+  vim.notify('get_line: ' .. vim.inspect(get_line))
   if not operatorRange then
     return nil
   end
@@ -126,6 +130,7 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     return nil
   end
 
+  vim.notify(keyString)
   if
     keyString:find(' iw ')
     or keyString:find(' aw ')
@@ -158,29 +163,42 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     local segment = lineText:sub(a, b)
     -- TEST: 999
     -- vim.notify('999------> ' .. vim.inspect(segment))
+
+    -- NOTE: WORDS ciw diw yiw caw daw yaw
     if segment:match('^%w[%w_]*$') then
-      return 'Text object tip: try `ciw` / `diw` / `yiw` to operate on the word.'
+      return 'Text Object:\n  try ` ciw ` ` diw ` ` yiw ` ` caw ` ` daw ` ` yaw `\n to operate on a word.'
     end
+
+    -- NOTE: DOUBLE QUOTES ci" di" yi"
     if segment:find('"') then
-      return 'Text object tip: inside double-quotes use `ci"` / `di"` (or `ca"`).'
+      return 'Text Object:\n  inside double-quotes use ` ci" ` ` di" ` ` yi `'
     end
+
+    -- NOTE: SINGLE QUOTES ci' di' yi'
     if segment:find("'") then
-      return "Text object tip: inside single-quotes use `ci'` / `di'` (or `ca'`)."
+      return "Text Object:\n  inside single-quotes use ` ci' ` ` di' ` ` yi `"
     end
+
+    -- NOTE: PARENTHESES ci( di( yi(
     if segment:find('%(') or segment:find('%)') then
-      return 'Text object tip: inside parentheses use `ci(` / `di(` (or `ca(`).'
+      return 'Text Object:\n  inside parentheses use ` ci( ` ` di( ` ` yi( `'
     end
+
+    -- NOTE: BRACKETS ci[ di[ yi[
     if segment:find('%[') or segment:find('%]') then
-      return 'Text object tip: inside brackets use `ci[` / `di[` (or `ca[`).'
+      return 'Text Object:\n  inside brackets use ` ci[ ` ` di[ ` ` yi[ `'
     end
+
+    -- NOTE: BRACES ci{ di{ yi{
     if segment:find('%{') or segment:find('%}') then
-      return 'Text object tip: inside braces use `ci{` / `di{` (or `ca{`).'
+      return 'Text Object:\n  inside braces use ` ci{ ` ` di{ ` ` yi{ `'
     end
   end
 
+  -- NOTE: PARAGRAPHS dip cip yip
   local lines = math.abs(operatorRange.endRow - operatorRange.startRow) + 1
   if lines >= 3 then
-    return 'Text object tip: for paragraphs use `dip`/`cip` or `dap`/`cap`.'
+    return 'Text Object:\n  for paragraphs use ` dip ` ` cip ` ` yip `'
   end
 
   return nil
@@ -205,7 +223,6 @@ end
 --   local usedHunting =
 --     has_any_key(keys, { ['f'] = true, ['F'] = true, ['t'] = true, ['T'] = true, ['%'] = true })
 --   local usedChangeOrDelete = (
---     keyString:find(' c ')
 --     or keyString:find(' s ')
 --     or keyString:find(' d ')
 --   ) ~= nil
@@ -376,7 +393,7 @@ end
 ---@param episode {}
 ---@param context {}
 ---@return string|nil, {} -- returns the actual suggestion text for a notification OR returns nil if no suggestions were twiggered, and a table of recent keys.
-function Advanced.suggest(episode, context)
+function M.suggest(episode, context)
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
@@ -438,4 +455,4 @@ function Advanced.suggest(episode, context)
   return nil, recentKeys
 end
 
-return Advanced
+return M

@@ -6,13 +6,14 @@
 -- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
 -- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
 
-local Episodes = {}
+local M = {}
 
 local Advanced = require('motioncoach-nvim.suggestions.advanced')
 local Beginner = require('motioncoach-nvim.suggestions.beginner')
 local Config = require('motioncoach-nvim.config')
 local Formatter = require('motioncoach-nvim.formatter')
 local Keylog = require('motioncoach-nvim.keylog')
+local Logger = require('motioncoach-nvim.logger')
 local Notify = require('motioncoach-nvim.notify')
 local VimRegisters = require('motioncoach-nvim.vimregisters')
 local State = require('motioncoach-nvim.state')
@@ -145,7 +146,9 @@ local function finalize_episode()
   if config.coachingLevel == 1 then
     local beginnerTip = Beginner.suggest(episode, context)
     if beginnerTip then
+      Logger:log('BeginnerTip:', beginnerTip, beginnerTip, vim.cmd('split'))
       emit(beginnerTip, nil)
+      -- Logger:show()
       return
     end
   end
@@ -279,7 +282,7 @@ local function on_cursor_moved()
 end
 
 ---@param level number | nil 0 = off | 1 = Beginner | 2 = Advanced
-function Episodes.set_coaching_level(level)
+function M.set_coaching_level(level)
   level = tonumber(level) or 0
   level = Utils.clampNumber(level, 0, 2)
 
@@ -299,7 +302,7 @@ function Episodes.set_coaching_level(level)
   end
 end
 
-function Episodes.install_autocmds()
+function M.install_autocmds()
   local augroup = vim.api.nvim_create_augroup('MotionCoach', { clear = true })
 
   vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter' }, {
@@ -350,16 +353,16 @@ function Episodes.install_autocmds()
 
   -- Commands
   vim.api.nvim_create_user_command('MotionCoachOff', function()
-    Episodes.set_coaching_level(0)
+    M.set_coaching_level(0)
   end, {})
   vim.api.nvim_create_user_command('MotionCoachBeginner', function()
-    Episodes.set_coaching_level(1)
+    M.set_coaching_level(1)
   end, {})
   vim.api.nvim_create_user_command('MotionCoachAdvanced', function()
-    Episodes.set_coaching_level(2)
+    M.set_coaching_level(2)
   end, {})
   vim.api.nvim_create_user_command('MotionCoachLevel', function(opts)
-    Episodes.set_coaching_level(tonumber(opts.args))
+    M.set_coaching_level(tonumber(opts.args))
   end, {
     nargs = 1,
     complete = function()
@@ -368,4 +371,4 @@ function Episodes.install_autocmds()
   })
 end
 
-return Episodes
+return M
