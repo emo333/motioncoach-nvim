@@ -3,8 +3,10 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
---  INFO: Formatting helper
-local Formatter = {}
+
+--  INFO: Formatting helper for messages in notifications
+---@class Formatter
+local M = {}
 
 local Config = require('motioncoach-nvim.config')
 
@@ -28,7 +30,7 @@ local function should_display_token(token)
 end
 
 ---@param rawKeyTokens {} the keys Homie typed that led to this suggestion
-function Formatter.format_keys_for_display(rawKeyTokens)
+function M.format_keys_for_display(rawKeyTokens)
   if not formatterConfig.enabled then
     return table.concat(rawKeyTokens, ' ')
   end
@@ -85,4 +87,4 @@ function Formatter.format_keys_for_display(rawKeyTokens)
   return table.concat(collapsed, ' ')
 end
 
-return Formatter
+return M

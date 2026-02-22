@@ -3,10 +3,11 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
+
 ---@class KeyLog
 ---@field Keylog.get_recent_keys function
 ---@field Keylog.install_if_needed function
-local Keylog = {}
+local M = {}
 
 local Config = require('motioncoach-nvim.config')
 local State = require('motioncoach-nvim.state')
@@ -31,7 +32,7 @@ end
 
 ---@param windowMilliseconds number
 ---@return table
-function Keylog.get_recent_keys(windowMilliseconds)
+function M.get_recent_keys(windowMilliseconds)
   local config = Config.get()
   local runtimeState = State.get()
 
@@ -58,7 +59,7 @@ function Keylog.get_recent_keys(windowMilliseconds)
   return keys
 end
 
-function Keylog.install_if_needed()
+function M.install_if_needed()
   local runtimeState = State.get()
   if runtimeState.onKeyHookInstalled then
     return
@@ -90,7 +91,7 @@ function Keylog.install_if_needed()
   end, runtimeState.namespace)
 end
 
-function Keylog.uninstall_if_needed()
+function M.uninstall_if_needed()
   local runtimeState = State.get()
   if not runtimeState.onKeyHookInstalled then
     return
@@ -103,7 +104,7 @@ end
 ---@param keys {} table of strings representing keys
 ---@param key string key to be compared
 ---@return boolean
-function Keylog.key_exists_in_keyring(keys, key)
+function M.key_exists_in_keyring(keys, key)
   for _, v in ipairs(keys) do
     if v == key then
       return true
@@ -112,4 +113,4 @@ function Keylog.key_exists_in_keyring(keys, key)
   return false
 end
 
-return Keylog
+return M

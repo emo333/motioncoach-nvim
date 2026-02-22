@@ -3,6 +3,7 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
+--
 -- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
 -- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
 
@@ -21,7 +22,7 @@ local Utils = require('motioncoach-nvim.utils')
 
 -- TODO: Need to handle this for other notifiers (plugins) besides snacks.notify
 local function notify(message)
-  Notify.send(message, Config.get().notifyLogLevel)
+  Notify.send(message, Config:get().notifyLogLevel)
 end
 
 local function get_line(bufferNumber, row1)
@@ -146,7 +147,7 @@ local function finalize_episode()
   if config.coachingLevel == 1 then
     local beginnerTip = Beginner.suggest(episode, context)
     if beginnerTip then
-      Logger:log('BeginnerTip:', beginnerTip, beginnerTip, vim.cmd('split'))
+      -- Logger:log('BeginnerTip:', beginnerTip, beginnerTip, vim.cmd('split'))
       emit(beginnerTip, nil)
       -- Logger:show()
       return

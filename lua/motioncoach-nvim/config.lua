@@ -3,34 +3,47 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
----Configuration Module
+
+---@class Config
 local M = {}
 
--- TODO: reconsider (get opinions of avid vim users) all these defaults before publishing
+--  TODO: reconsider (get opinions of avid vim users) all these defaults before publishing
 local defaultConfig = {
+  --- The coaching level on start of NeoVim session
   --- default 1 (Beginner)
   coachingLevel = 1,
-  --- default INFO
-  notifyLogLevel = vim.log.levels.INFO,
+  --- The logging level of notifications
+  --- default WARN(3)
+  notifyLogLevel = vim.log.levels.WARN,
+  --- Time between an Episode finalizing and a new Episode starting
   --- default 700ms
   episodeGapMilliseconds = 700,
+  --- The minimum distance (eg. from start column to end column OR from start row to end row) before a suggestion check will occur
   --- default 8
-  minimumNaiveCostToCoach = 4,
+  minimumNaiveCostToCoach = 8,
+  --- The time from last suggestion that must elapse before a new suggestion can occur
   --- default 2500ms
   suggestionCooldownMilliseconds = 2500,
+  --- The time after an Undo command has occurred that must elapse before a new suggestion can occur
   --- default 3000ms
   undoSuppressionMilliseconds = 3000,
+  --- The maximum keys (each key the user has pressed in a given Episode) that will be stored in the keyRing
   --- default 260
   keyRingBufferSize = 260,
+  --- The time within that a "patern" of keys will be analyzed
   --- default 2000ms
   keyPatternWindowMilliseconds = 2000,
+  --- Capture command keys (eg. i a p o x d c r y u ...) -- If this is true, a lot more Advanced suggestions are enabled
   --- default false
   captureCommandLineKeys = false,
+  --- Capture keys while in INSERT mode -- If this is true, al lot more Advanced suggestions are enabled. {if captureCommandLineKeys = false, this is already disabled}
   --- default false
   captureInsertModeKeys = false,
+  ---
   --- default 3
   hotspotRevisitThreshold = 3,
 
+  --- Configuration for the Formatter(which is a helper for formatting the actual notification messages)
   typedKeysFormatter = {
     enabled = true,
     maxTokens = 25,
@@ -58,6 +71,7 @@ local defaultConfig = {
     },
   },
 
+  --- TODO: For future use of PLUGIN RECOMENDATIONS
   pluginRecommendations = {
     enabled = false,
     thresholdDefault = 10,

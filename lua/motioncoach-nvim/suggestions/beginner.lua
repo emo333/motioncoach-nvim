@@ -103,17 +103,17 @@ function M.suggest(episode, context)
   if absLineDelta == 0 then
     if to.col == 0 then
       if not Keylog.key_exists_in_keyring(recentKeys, '0') then
-        return 'Try `0` to jump to start of line.'
+        return 'Try ` 0 ` to jump to start of line'
       end
     end
 
     local first_nonblank_col_in_line = first_nonblank_col(destinationLineText)
     if destinationLineText:match('%S') and to.col == first_nonblank_col_in_line then
-      return 'Try `^` to jump to first non-blank character on the line.'
+      return 'Try ` ^ ` to jump to first non-blank character of line'
     end
 
     if #destinationLineText > 0 and to.col >= (#destinationLineText - 1) then
-      return 'Try `$` to jump to end of line.'
+      return 'Try ` $ ` to jump to end of line'
     end
   end
 
@@ -130,9 +130,9 @@ function M.suggest(episode, context)
   local total_lines = vim.api.nvim_buf_line_count(0)
   if total_lines == to.row or to.row == 1 then
     if absLineDelta >= 10 then
-      local which = (lineDelta > 0) and '`G` to move to end of file'
-        or '`gg` to move to top of file'
-      return ('Consider using %s.'):format(which)
+      local which = (lineDelta > 0) and '` G ` to move to end of file'
+        or '` gg ` to move to top of file'
+      return ('Consider using %s'):format(which)
     end
   end
 
@@ -156,15 +156,15 @@ function M.suggest(episode, context)
   end
 
   if absLineDelta >= 200 then
-    local which = (lineDelta > 0) and '`/` (search downward)' or '`?` (search upward)'
-    return ('Huge move: consider %s when navigating far.'):format(which)
+    local which = (lineDelta > 0) and '` / ` (search downward)' or '` ? ` (search upward)'
+    return ('Huge move: consider %s for your target text'):format(which)
   end
 
   if absLineDelta >= vim.api.nvim_win_get_height(0) then
     -- FIX: if last keys{from keylogger} were NOT '<C-d>' or '<C-u>'
     -- NOTE: possibly handle this by finalizing episode on detection of '<C-d>' or '<C-u>'
-    local scroll = (lineDelta > 0) and '<C-d>' or '<C-u>'
-    return ('Big move: try `%s` to scroll a screenful (then adjust).'):format(scroll)
+    local scroll = (lineDelta > 0) and ' <C-d> ' or ' <C-u> '
+    return ('Big move: try `%s` to scroll'):format(scroll)
   end
 
   return nil

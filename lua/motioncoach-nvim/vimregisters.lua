@@ -3,8 +3,10 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
+
 -- Captures yank contents (TextYankPost) into a per-buffer yank ring for coaching.
-local VimRegisters = {}
+---@class VimRegisters
+local M = {}
 
 local State = require('motioncoach-nvim.state')
 local Utils = require('motioncoach-nvim.utils')
@@ -32,7 +34,7 @@ local function get_register_text(registerName)
   return content
 end
 
-function VimRegisters.capture_yank(event)
+function M.capture_yank(event)
   local bufferNumber = vim.api.nvim_get_current_buf()
   local perBufferState = State.get_or_create_per_buffer(bufferNumber)
   local registerName = normalize_register_name(event.regname)
@@ -55,4 +57,4 @@ function VimRegisters.capture_yank(event)
   end
 end
 
-return VimRegisters
+return M

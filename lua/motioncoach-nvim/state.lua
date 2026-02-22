@@ -3,7 +3,9 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
-local State = {}
+
+---@class State
+local M = {}
 
 local pluginNamespace = vim.api.nvim_create_namespace('motioncoach-nvim')
 
@@ -19,15 +21,15 @@ local runtimeState = {
   perBufferStateByBufferNumber = {},
 }
 
-function State.get()
+function M.get()
   return runtimeState
 end
 
-function State.init()
+function M.init()
   -- didn't need this but leaving it here in case have a need later
 end
 
-function State.get_or_create_per_buffer(bufferNumber)
+function M.get_or_create_per_buffer(bufferNumber)
   local existing = runtimeState.perBufferStateByBufferNumber[bufferNumber]
   if existing then
     return existing
@@ -52,4 +54,4 @@ function State.get_or_create_per_buffer(bufferNumber)
   return created
 end
 
-return State
+return M

@@ -3,6 +3,7 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
+
 local MotionCoachNvim = {}
 
 local Config = require('motioncoach-nvim.config')
@@ -29,11 +30,7 @@ function MotionCoachNvim.setup(userConfig)
         require('motioncoach-nvim').set_level(2)
       end, { desc = 'MotionCoach Advanced Level[2]' })
       -- Episodes.set_coaching_level(Config.get().coachingLevel)
-      vim.notify(
-        'Motion Coach is here!\n\n   `<leader>m`   to disable or set level\n\n',
-        2,
-        { title = 'motioncoach' }
-      )
+      vim.notify(' [Enabled]  ` <leader>m ` to disable or set level', 3, { title = 'motioncoach' })
     end,
   })
   Keylog.install_if_needed()
@@ -43,12 +40,6 @@ end
 function MotionCoachNvim.set_level(level)
   Episodes.set_coaching_level(level)
 end
-
--- TODO: prob not needed.  is Homie really going to ever want to "toggle" modes?
---
--- function MotionCoachNvim.toggle()
---   Episodes.toggle_level()
--- end
 
 function MotionCoachNvim.level()
   return Config.get().coachingLevel

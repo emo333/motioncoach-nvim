@@ -3,9 +3,11 @@
 --   /  ' \/ _ \/ __/ / _ \/ _ \/ __/ _ \/ _ `/ __/ _ \
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
-local Config = require('motioncoach-nvim.config')
 
-local Notify = {}
+---@class Notify
+local M = {}
+
+local Config = require('motioncoach-nvim.config')
 
 local function get_wrap_width()
   local wrapConfig = Config.get().notificationWrap or {}
@@ -51,7 +53,7 @@ local function wrap_one_line(line, width)
   return out
 end
 
-function Notify.format_message(message)
+function M.format_message(message)
   local wrapConfig = Config.get().notificationWrap or {}
   if not wrapConfig.enabled then
     return message
@@ -74,9 +76,9 @@ function Notify.format_message(message)
   return table.concat(resultLines, '\n')
 end
 
-function Notify.send(message, logLevel)
-  local formatted = Notify.format_message(message)
+function M.send(message, logLevel)
+  local formatted = M.format_message(message)
   vim.notify(formatted, logLevel, { title = 'motioncoach' })
 end
 
-return Notify
+return M
