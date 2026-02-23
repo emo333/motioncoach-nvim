@@ -66,29 +66,35 @@ function M.install_if_needed()
   end
   runtimeState.onKeyHookInstalled = true
 
+  vim.on_key(function(key, typed)
+    -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
+    local readable = vim.fn.keytrans(key)
+    print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
+    ring_push(key)
+  end)
   -- vim.on_key(function(key, typed)
   --   if typed ~= "" then
   --     -- This was physically pressed by the user
   --   end
   -- end)
-  vim.on_key(function(key, rawKeyBytes)
-    -- Be maximally defensive: ignore anything unexpected.
-    if type(rawKeyBytes) ~= 'string' or rawKeyBytes == '' then
-      return
-    end
-    -- TEST:
-    -- vim.notify(rawKeyBytes)
-
-    -- keytrans itself can throw in rare cases; protect it.
-    local ok, normalized = pcall(vim.keytrans, rawKeyBytes)
-    -- if not ok or type(normalized) ~= 'string' or normalized == '' then
-    --   return
-    -- end
-    vim.notify('normalized: ' .. normalized)
-    -- No mode checks, no notify, no vim.api calls here. Just store.
-    -- ring_push(normalized)
-    ring_push(rawKeyBytes)
-  end, runtimeState.namespace)
+  --   vim.on_key(function(key, rawKeyBytes)
+  --     -- Be maximally defensive: ignore anything unexpected.
+  --     if type(rawKeyBytes) ~= 'string' or rawKeyBytes == '' then
+  --       return
+  --     end
+  --     -- TEST:
+  --     -- vim.notify(rawKeyBytes)
+  --
+  --     -- keytrans itself can throw in rare cases; protect it.
+  --     local ok, normalized = pcall(vim.keytrans, rawKeyBytes)
+  --     -- if not ok or type(normalized) ~= 'string' or normalized == '' then
+  --     --   return
+  --     -- end
+  --     -- vim.notify('normalized: ' .. normalized)
+  --     -- No mode checks, no notify, no vim.api calls here. Just store.
+  --     -- ring_push(normalized)
+  --     ring_push(rawKeyBytes)
+  --   end, runtimeState.namespace)
 end
 
 function M.uninstall_if_needed()

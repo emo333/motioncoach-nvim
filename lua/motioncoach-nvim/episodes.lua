@@ -288,12 +288,13 @@ local function on_cursor_moved()
   }
   -- local config = Config.get()
 
-  local currentMode = vim.api.nvim_get_mode().mode
+  currentMode = vim.api.nvim_get_mode().mode
   local keys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
   -- TEST:
   -- vim.notify('lastKey: ' .. vim.inspect(keys))
   -- vim.notify('excludeKeys: ' .. vimpect(excludeKeys))
-  vim.notify('keys: ' .. vim.inspect(keys))
+  -- vim.notify('keys: ' .. vim.inspect(keys))
+
   local match = has_exclude_match(keys, excludeKeys)
   if match then
     vim.notify(match .. ' key ::::::::::::EXCLUSION')
