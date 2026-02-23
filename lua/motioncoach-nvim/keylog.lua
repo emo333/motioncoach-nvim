@@ -59,6 +59,7 @@ function M.get_recent_keys(windowMilliseconds)
   return keys
 end
 
+-- TODO: NEED TO TEST with kickstart-nvim and bare bones nvim before removimg testing code below
 -- Hook in the Keylogger
 function M.install_if_needed()
   local runtimeState = State.get()
