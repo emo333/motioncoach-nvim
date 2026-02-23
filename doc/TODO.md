@@ -21,4 +21,9 @@
 
 - detect existing diagnostics in buffer and suggest diagnostic navigation keymaps (if installed)
 
-<!-- markdownlint-enable MD013 -->
+- create key combination patterns for various suggestions
+  - dwbdw = deleted word while in middle of word then moved to begin of word and deleted
+    - suggest "use `diw` (delete inside word) to delete words. Also can use `daw` (delete around word) to delete word AND the surrounding characters (spaces/quotes/parens/braces/brackets). You can also use `di` + `"` to delete everything inside quotation marks OR `di` + `(` to delete everything inside parens etc...
+
+  - hvwy OR lvby = moved in word to get to end or begin then visual select word to yank
+  <!-- markdownlint-enable MD013 -->
