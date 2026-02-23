@@ -59,6 +59,7 @@ function M.get_recent_keys(windowMilliseconds)
   return keys
 end
 
+-- Hook in the Keylogger
 function M.install_if_needed()
   local runtimeState = State.get()
   if runtimeState.onKeyHookInstalled then
@@ -66,7 +67,44 @@ function M.install_if_needed()
   end
   runtimeState.onKeyHookInstalled = true
 
+  -- TODO: handle double taps of j and k (they are getting remapped to g)
+  local ctrl_u = vim.api.nvim_replace_termcodes('<C-u>', true, true, true)
+  local ctrl_d = vim.api.nvim_replace_termcodes('<C-d>', true, true, true)
+  local scrollwheelup = vim.api.nvim_replace_termcodes('<ScrollwheelUp>', true, true, true)
+  local scrollwheeldown = vim.api.nvim_replace_termcodes('<ScrollwheelDown>', true, true, true)
+  local g = vim.api.nvim_replace_termcodes('g', true, true, true)
+  local z = vim.api.nvim_replace_termcodes('<z>', true, true, true)
   vim.on_key(function(key, typed)
+    if key == ctrl_u then
+      vim.schedule(function()
+        print('Logged: <C-u> pressed')
+      end)
+    end
+    if key == ctrl_d then
+      vim.schedule(function()
+        print('Logged: <C-d> pressed')
+      end)
+    end
+    if key == scrollwheelup then
+      vim.schedule(function()
+        print('Logged: <ScrollwheelUp> pressed')
+      end)
+    end
+    if key == scrollwheeldown then
+      vim.schedule(function()
+        print('Logged: <ScrollwheelDown> pressed')
+      end)
+    end
+    if typed == g then
+      vim.schedule(function()
+        print('Logged: g pressed')
+      end)
+    end
+    if key == z then
+      vim.schedule(function()
+        print('Logged: z pressed')
+      end)
+    end
     -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
     local readable = vim.fn.keytrans(key)
     print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
@@ -97,6 +135,7 @@ function M.install_if_needed()
   --   end, runtimeState.namespace)
 end
 
+-- UnHook the Keylogger
 function M.uninstall_if_needed()
   local runtimeState = State.get()
   if not runtimeState.onKeyHookInstalled then
