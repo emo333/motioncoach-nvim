@@ -84,7 +84,7 @@ function M.install_if_needed()
     -- if not ok or type(normalized) ~= 'string' or normalized == '' then
     --   return
     -- end
-    -- vim.notify(normalized)
+    vim.notify('normalized: ' .. normalized)
     -- No mode checks, no notify, no vim.api calls here. Just store.
     -- ring_push(normalized)
     ring_push(rawKeyBytes)

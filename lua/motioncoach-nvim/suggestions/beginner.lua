@@ -136,6 +136,8 @@ function M.suggest(episode, context)
     end
   end
 
+  vim.notify(vim.inspect(recentKeys))
+
   -- TODO: make user configurable 6 and 60
   if absLineDelta >= 6 and absLineDelta < 60 then
     local motion = (lineDelta > 0) and 'j' or 'k'
@@ -144,7 +146,6 @@ function M.suggest(episode, context)
       motion,
       absLineDelta + 1
     )
-    -- TODO: check for relativelinenumbers turned on
     local rln = ''
     if not vim.wo.relativenumber then
       rln = '\n\n'

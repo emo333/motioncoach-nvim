@@ -162,6 +162,7 @@ local function finalize_episode()
     end
   end
 end
+
 -- 💩
 local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   --
@@ -171,6 +172,18 @@ local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   -- local current_buffer_info = vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]
   -- vim.notify(vim.inspect(vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]))
 
+  local runtimeState = State.get()
+  runtimeState.currentEpisode = {
+    bufferNumber = bufferNumber,
+    from = cursorPos,
+    to = cursorPos,
+    timeFromMs = currentTimeMs,
+    timeToMs = currentTimeMs,
+    mode = modeString,
+  }
+end
+
+local function restart_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   local runtimeState = State.get()
   runtimeState.currentEpisode = {
     bufferNumber = bufferNumber,
@@ -237,11 +250,11 @@ local function on_cursor_moved()
 
     for _, value in pairs(recentKeys) do
       if lookup[value] then
-        return true
+        return value
       end
     end
 
-    return false
+    return nil
   end
 
   -- TODO: refactor the key check into keylog.lua
@@ -261,20 +274,30 @@ local function on_cursor_moved()
     '$',
     'g',
     'G',
-    '\4',
-    '\21',
+    '\4', --??
+    '\21', -- ??
+    '\18', -- ??
+    '^[', -- <Esc>
+    '<C-u>',
+    '<80><fc>\\4D',
+    '\4D',
+    '<80><fc>K', -- ScrollWheelUp
+    '<80><fc>L', -- ScrollWheelDown
     '<ScrollWheelUp>',
     '<ScrollWheelDown>',
   }
   -- local config = Config.get()
+
+  local currentMode = vim.api.nvim_get_mode().mode
   local keys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
   -- TEST:
   -- vim.notify('lastKey: ' .. vim.inspect(keys))
-  -- vim.notify('excludeKeys: ' .. vim.inspect(excludeKeys))
-  -- vim.notify('keys: ' .. vim.inspect(keys))
-  if has_exclude_match(keys, excludeKeys) then
-    -- vim.notify('key ::::::::::::EXCLUSION')
-    finalize_episode()
+  -- vim.notify('excludeKeys: ' .. vimpect(excludeKeys))
+  vim.notify('keys: ' .. vim.inspect(keys))
+  local match = has_exclude_match(keys, excludeKeys)
+  if match then
+    vim.notify(match .. ' key ::::::::::::EXCLUSION')
+    start_episode(bufferNumber, cursorPos, currentTimeMs, currentMode)
     return
   end
 

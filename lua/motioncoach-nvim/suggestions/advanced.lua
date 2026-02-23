@@ -114,9 +114,9 @@ end
 --
 local function text_object_suggestion(keys, operatorRange, get_line)
   -- TEST:
-  vim.notify('keys: ' .. vim.inspect(keys))
-  vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
-  vim.notify('get_line: ' .. vim.inspect(get_line))
+  -- vim.notify('keys: ' .. vim.inspect(keys))
+  -- vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
+  -- vim.notify('get_line: ' .. vim.inspect(get_line))
   if not operatorRange then
     return nil
   end
