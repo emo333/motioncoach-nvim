@@ -1,5 +1,5 @@
 <!-- markdownlint-disable-file -->
-<img width="100" height="100" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" /> # `motioncoach-nvim`
+# `motioncoach-nvim` <img width="100" height="100" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" /> 
 
 `motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
 
