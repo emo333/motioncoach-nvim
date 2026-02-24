@@ -45,4 +45,7 @@ function MotionCoachNvim.level()
   return Config.get().coachingLevel
 end
 
+-- using for testing the issue with jj or kk quickly returning a g
+-- vim.opt.timeoutlen = 300 -- Set to 300ms or lower
+
 return MotionCoachNvim
