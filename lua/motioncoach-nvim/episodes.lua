@@ -312,18 +312,24 @@ function M.set_coaching_level(level)
   level = Utils.clampNumber(level, 0, 2)
 
   local config = Config.get()
-  config.coachingLevel = level
 
-  if level == 0 then
-    Keylog.uninstall_if_needed()
-    finalize_episode()
-    notify('Coaching OFF')
-  elseif level == 1 then
+  -- HACK: temp remove ability to use Advanced Level (until Advanced Level is stable for production)
+  if level >= 2 then
     Keylog.install_if_needed()
-    notify('Beginner coaching ON (level 1).')
+    notify('OOPS!!! Advanced coaching is not available yet.\n\n  Beginner coaching ON (level 1)')
   else
-    Keylog.install_if_needed()
-    notify('Advanced coaching ON (level 2).')
+    config.coachingLevel = level
+    if level == 0 then
+      Keylog.uninstall_if_needed()
+      finalize_episode()
+      notify('Coaching OFF')
+    elseif level == 1 then
+      Keylog.install_if_needed()
+      notify('Beginner coaching ON (level 1).')
+    else
+      Keylog.install_if_needed()
+      notify('Advanced coaching ON (level 2).')
+    end
   end
 end
 
