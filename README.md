@@ -19,6 +19,8 @@ It is designed as a _coach_, not a tutor. Suggestions are:
 
 * All suggestions are delivered via NeoVim notification messages
 
+https://github.com/user-attachments/assets/013d9746-d6a7-4bca-adc8-309e12fa7b23
+
 ---
 
 ## Coaching Levels
