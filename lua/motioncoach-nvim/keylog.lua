@@ -78,37 +78,37 @@ function M.install_if_needed()
   vim.on_key(function(key, typed)
     if key == ctrl_u then
       vim.schedule(function()
-        print('Logged: <C-u> pressed')
+        -- print('Logged: <C-u> pressed')
       end)
     end
     if key == ctrl_d then
       vim.schedule(function()
-        print('Logged: <C-d> pressed')
+        -- print('Logged: <C-d> pressed')
       end)
     end
     if key == scrollwheelup then
       vim.schedule(function()
-        print('Logged: <ScrollwheelUp> pressed')
+        -- print('Logged: <ScrollwheelUp> pressed')
       end)
     end
     if key == scrollwheeldown then
       vim.schedule(function()
-        print('Logged: <ScrollwheelDown> pressed')
+        -- print('Logged: <ScrollwheelDown> pressed')
       end)
     end
     if typed == g then
       vim.schedule(function()
-        print('Logged: g pressed')
+        -- print('Logged: g pressed')
       end)
     end
     if key == z then
       vim.schedule(function()
-        print('Logged: z pressed')
+        -- print('Logged: z pressed')
       end)
     end
     -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
     local readable = vim.fn.keytrans(key)
-    print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
+    -- print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
     ring_push(key)
   end)
   -- vim.on_key(function(key, typed)

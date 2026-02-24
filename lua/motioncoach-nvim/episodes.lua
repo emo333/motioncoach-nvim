@@ -297,7 +297,7 @@ local function on_cursor_moved()
 
   local match = has_exclude_match(keys, excludeKeys)
   if match then
-    vim.notify(match .. ' key ::::::::::::EXCLUSION')
+    -- vim.notify(match .. ' key ::::::::::::EXCLUSION')
     start_episode(bufferNumber, cursorPos, currentTimeMs, currentMode)
     return
   end
