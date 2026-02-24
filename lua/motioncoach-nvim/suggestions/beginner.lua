@@ -136,7 +136,7 @@ function M.suggest(episode, context)
     end
   end
 
-  vim.notify(vim.inspect(recentKeys))
+  -- vim.notify(vim.inspect(recentKeys))
 
   -- TODO: make user configurable 6 and 60
   if absLineDelta >= 6 and absLineDelta < 60 then

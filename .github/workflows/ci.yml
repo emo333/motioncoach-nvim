@@ -17,7 +17,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     name: pandoc to vimdoc
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/dev' }}
     permissions:
       contents: write
     steps:

@@ -297,7 +297,7 @@ local function on_cursor_moved()
 
   local match = has_exclude_match(keys, excludeKeys)
   if match then
-    vim.notify(match .. ' key ::::::::::::EXCLUSION')
+    -- vim.notify(match .. ' key ::::::::::::EXCLUSION')
     start_episode(bufferNumber, cursorPos, currentTimeMs, currentMode)
     return
   end
@@ -341,6 +341,33 @@ function M.install_autocmds()
         vim.notify_once('Scrolling with mouse is cheating...')
         return '<ScrollWheelDown>'
       end, { expr = true, noremap = true, silent = true, buffer = true })
+
+      -- override lazyvim keymappings:
+      -- LazyVim keymaps j and k with a v:count to g so we have to override those keymaps in order for keylogging to function correctly
+      vim.keymap.set(
+        { 'n', 'x' },
+        'j',
+        "v:count == 0 ? 'j' : 'j'",
+        { desc = 'Down', expr = true, silent = true, noremap = true }
+      )
+      vim.keymap.set(
+        { 'n', 'x' },
+        '<Down>',
+        "v:count == 0 ? 'j' : 'j'",
+        { desc = 'Down', expr = true, silent = true, noremap = true }
+      )
+      vim.keymap.set(
+        { 'n', 'x' },
+        'k',
+        "v:count == 0 ? 'k' : 'k'",
+        { desc = 'Up', expr = true, silent = true, noremap = true }
+      )
+      vim.keymap.set(
+        { 'n', 'x' },
+        '<Up>',
+        "v:count == 0 ? 'k' : 'k'",
+        { desc = 'Up', expr = true, silent = true, noremap = true }
+      )
     end,
   })
 
