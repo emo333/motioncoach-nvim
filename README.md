@@ -1,40 +1,27 @@
 <!-- markdownlint-disable-file -->
 # `motioncoach-nvim` <img width="100" height="100" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" /> 
 
-`motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques.
+`motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques **"WHEN YOU NEED THEM"**
 
-It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
+It is designed as a _coach_, not a tutor. Suggestions are:
 
-- contextual
-- rate-limited
+- contextual to user's live motions/commands
+- rate-limited by keystrokes and time frames
 - undo-aware
-- layered
-  so beginner peeps aren’t overwhelmed and advanced peeps aren't annoyed.
+- registers-aware
+- jumplist-aware
+- leveled (Beginner/Advanced)
 
-* All suggestions are delivered via a _"wrapped"_ **`vim.notify`**.
+* All suggestions are delivered via NeoVim notification messages
 
 ---
 
 ## Coaching Levels
 
-`motioncoach-nvim` has **three coaching levels**:
-
-- **Level 0** — Off
-- **Level 1** — Beginner coaching
-- **Level 2** — Advanced coaching
-  - Includes deeper motion suggestions and command suggestions
-  - Shows a formatted **“You typed:”** line for reflection
-
----
-
-## Features
-
-### Coaching Levels
-
 - Selectable with Keymaps
 - Apply to Neovim session
 
-#### Beginner Coaching (Level 1)
+### Beginner Coaching (Level 1)
 
 - Count compression (`10j`, `5k`)
 - Scroll suggestions (`<C-d>`, `<C-u>`)
@@ -44,8 +31,9 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
 ---
 
-#### Advanced Coaching (Level 2)
+### Advanced Coaching (Level 2)
 
+Some Advanced Suggestions:
 - Key pattern analysis (via `vim.on_key`)
 - State-diff validation (cursor movement, operators, undo)
 - Text object suggestions:
@@ -62,7 +50,7 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
 ---
 
-#### Coaching Off (Level 0)
+### Coaching Off (Level 0)
 
 - Coaching is disabled
 
@@ -81,6 +69,20 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
     })
   end
 }
+```
+### packer.nvim
+
+```lua
+use "emo333/motioncoach.nvim"
+```
+### vim.pack (Neovim version 12+ only)
+
+```lua
+vim.pack.add({
+  'https://github.com/emo333/motioncoach-nvim',
+})
+-- after add()
+plugin1 = require('motioncoach-nvim')
 ```
 
 ---
@@ -101,7 +103,6 @@ It is designed as a _coach_, not a linter or a tutorial. Suggestions are:
 
 ```lua
   vim.keymap.set('n', '<leader>m', '[M]otion Coach -->')
-  end, { desc = 'MotionCoach cycle level' })
   vim.keymap.set('n', '<leader>m0', function()
     require('motioncoach-nvim').set_level(0)
   end, { desc = 'MotionCoach Disable(0)' })
@@ -142,9 +143,9 @@ return {
       Snacks.notifier.notify = function(msg, level, notify_opts)
         notify_opts = notify_opts or {}
 
-        -- Custom logic: If msg has "Motion" in it, set timeout to 5 seconds
+        -- Custom logic: If msg has "Motion" in it, set timeout to 3 seconds
         if msg:find("Motion") then
-          notify_opts.timeout = 5000
+          notify_opts.timeout = 3000
         end
 
         return original_notify(msg, level, notify_opts)
@@ -185,7 +186,7 @@ By default, `motioncoach-nvim`:
 
 ❌ Does not capture insert-mode keys
 
-You can override these if you want in order to get more Advance suggestions:
+You can override these, if you desire, to get more Advance suggestions:
 
 ```lua
 require("motioncoach-nvim").setup({
@@ -201,15 +202,8 @@ require("motioncoach-nvim").setup({
 
 ❌ Never writes anything to disk
 
-❌ Never sends data externally
+❌ Never sends data
 
-### Typed Keys Display (Advanced Only)
-
-- In advanced mode, notifications include:
-
-```
-  You typed: j×12 w d i w
-```
 
 ### Yank History (Advanced Only)
 
@@ -217,29 +211,7 @@ require("motioncoach-nvim").setup({
 
 - This is used to suggest yank( or cut/delete )/register technique suggestions
 
-- Yank contents never leave memory
-
----
-
-## The formatter
-
-- filters noise (<Plug>, mouse events, etc.)
-
-- collapses repeats (j×12)
-
-- truncates long "Episode" histories
-
-- Configurable:
-
-```lua
-require("motioncoach-nvim").setup({
-  typedKeysFormatter = {
-    maxTokens = 25,
-    collapseRepeats = true,
-    repeatMarker = "×",
-  }
-})
-```
+- Yank contents, captured for suggestions, never leave memory
 
 ---
 
@@ -282,7 +254,7 @@ require("motioncoach-nvim").setup({
 
 ## Provider Hook { FUTURE FEATURE}
 
-For long-term evolution, you can supply a provider function that decides recommendations dynamically:
+For long-term evolution, you will be able to supply a provider function that decides recommendations dynamically:
 
 ```lua
 require("motioncoach-nvim").setup({
@@ -298,7 +270,7 @@ require("motioncoach-nvim").setup({
 })
 ```
 
-- The provider runs before built-in defaults.
+- The provider would run before built-in defaults.
 
 ---
 
