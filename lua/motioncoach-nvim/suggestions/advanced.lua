@@ -12,10 +12,15 @@ local Keylog = require('motioncoach-nvim.keylog')
 local Plugins = require('motioncoach-nvim.suggestions.plugins')
 local Utils = require('motioncoach-nvim.utils')
 
+--
+
+-- comment ( stuff ) " stuff in quotes"
+
 ---@return {} | nil
 local function detect_last_operator_range()
-  -- local startPos = vim.fn.getpos("'[")
-  local startPos = vim.fn.getpos("'^")
+  -- vim.fn.getpos("'[") gets starting position of last operation (eg. y c d x )
+  local startPos = vim.fn.getpos("'[")
+  -- local startPos = vim.fn.getpos("'^")
   local endPos = vim.fn.getpos("']")
   if not startPos or not endPos then
     return nil
@@ -23,6 +28,10 @@ local function detect_last_operator_range()
   if startPos[2] == 0 or endPos[2] == 0 then
     return nil
   end
+
+  -- vim.fn.getjumplist() gets jummplist as a {} with each jump as a sub table
+  local jumps, last_idx = unpack(vim.fn.getjumplist())
+  print(vim.inspect(jumps))
 
   return {
     bufferNumber = startPos[1],
@@ -83,6 +92,7 @@ end
 --  suggestion:
 --
 local function text_object_suggestion(keys, operatorRange, get_line)
+  vim.notify(vim.inspect(operatorRange.startCol .. ' to ' .. operatorRange.endCol))
   if not operatorRange then
     return nil
   end
