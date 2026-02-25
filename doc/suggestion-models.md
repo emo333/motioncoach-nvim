@@ -4,9 +4,13 @@
 
 ================================================================================
 
+---
+
+---
+
 ## Beginner
 
-**`h`,`l` CURSOR MOVEMENTS**
+### **`h`,`l` CURSOR MOVEMENTS**
 
 Detection:
 
@@ -18,7 +22,7 @@ Suggestion:
 
 ---
 
-**`j`,`k` CURSOR MOVEMENTS**
+### **`j`,`k` CURSOR MOVEMENTS**
 
 Detection:
 
@@ -31,12 +35,49 @@ Suggestion:
 
 ---
 
+---
+
 ## Advanced
 
----
+### COUNT COMPRESSION SUGGESTION
 
-## Beginner AND Advanced
+Detection:
 
-- Plugin Suggestions
+-
 
----
+Suggestion:
+
+- ***
+
+### TEXT OBJECT SUGGESTION
+
+Detection:
+
+-
+
+Suggestion:
+
+- ***
+
+### VIMREGISTER SUGGESTION
+
+Detection:
+
+-
+
+Suggestion:
+
+- ***
+
+### JUMPLIST SUGGESTION
+
+Detection:
+
+- line travel distance > 40( Configurable )
+
+Suggestion:
+
+- --JUMPLIST SUGGESTION--
+  `<C-o>` backward | `<C-i>` forward | `` toggle'
+
+  ***

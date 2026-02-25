@@ -12,35 +12,7 @@ local Keylog = require('motioncoach-nvim.keylog')
 local Plugins = require('motioncoach-nvim.suggestions.plugins')
 local Utils = require('motioncoach-nvim.utils')
 
--- TODO: move this to Utils
-local function build_key_string(keys)
-  return ' ' .. table.concat(keys, ' ') .. ' '
-end
-
--- local function has_any_key(keys, keySet)
---   for _, k in ipairs(keys) do
---     if keySet[k] then
---       return true
---     end
---   end
---   return false
--- end
-
 ---@return {} | nil
---[[
-Gets the range of the last operator and puts it in a nice little table:
-
-{
-  buffer number,
-  starting row,
-  starting column,
-  ending row,
-  ending column
-}
-
-How cool is that!!
-  ]]
---
 local function detect_last_operator_range()
   -- local startPos = vim.fn.getpos("'[")
   local startPos = vim.fn.getpos("'^")
@@ -70,9 +42,6 @@ end
 local function count_compression(keys)
   local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
   local lastToken, repeatCount = nil, 0
-  -- TEST:
-  -- local localkeys = keys
-  -- vim.notify(vim.inspect(localkeys))
   for _, token in ipairs(keys) do
     if allowed[token] then
       if token == lastToken then
@@ -86,7 +55,7 @@ local function count_compression(keys)
   end
 
   if lastToken and repeatCount >= 5 then
-    return ('You pressed `%s` %d times. Try `%d%s` (count + motion).'):format(
+    return ('You pressed ` %s ` %d times. Try ` %d%s ` (count + motion).'):format(
       lastToken,
       repeatCount,
       repeatCount,
@@ -94,11 +63,12 @@ local function count_compression(keys)
     )
   end
 
-  vim.notify('returning nil from count_compression')
+  -- vim.notify('returning nil from count_compression')
 
   return nil
 end
 
+-- ============================================================================
 -- INFO: TEXT OBJECT SUGGESTION
 --
 --  detection:
@@ -113,16 +83,10 @@ end
 --  suggestion:
 --
 local function text_object_suggestion(keys, operatorRange, get_line)
-  -- TEST:
-  -- vim.notify('keys: ' .. vim.inspect(keys))
-  -- vim.notify('operatorRange: ' .. vim.inspect(operatorRange))
-  -- vim.notify('get_line: ' .. vim.inspect(get_line))
   if not operatorRange then
     return nil
   end
-  local keyString = build_key_string(keys)
-  -- TEST:
-  -- vim.notify('keyString: ' .. vim.inspect(keyString))
+  local keyString = Utils.build_key_string(keys)
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
   local usedVisual = (keyString:find(' v ') or keyString:find(' V ') or keyString:find('<C%-v>'))
@@ -131,7 +95,6 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     return nil
   end
 
-  vim.notify(keyString)
   if
     keyString:find(' iw ')
     or keyString:find(' aw ')
@@ -151,9 +114,6 @@ local function text_object_suggestion(keys, operatorRange, get_line)
     return nil
   end
 
-  -- TEST:
-  -- vim.notify( 'befoer 999------> ' .. vim.inspect(operatorRange.startRow .. '  ' .. operatorRange.endRow))
-
   if operatorRange.startRow == operatorRange.endRow then
     local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
     local a = Utils.clampNumber(operatorRange.startCol + 1, 1, #lineText)
@@ -162,8 +122,6 @@ local function text_object_suggestion(keys, operatorRange, get_line)
       a, b = b, a
     end
     local segment = lineText:sub(a, b)
-    -- TEST: 999
-    -- vim.notify('999------> ' .. vim.inspect(segment))
 
     -- NOTE: WORDS ciw diw yiw caw daw yaw
     if segment:match('^%w[%w_]*$') then
@@ -204,6 +162,7 @@ local function text_object_suggestion(keys, operatorRange, get_line)
 
   return nil
 end
+-- ============================================================================
 
 -- ---@param keys {}?
 -- ---@param operatorRange {}?
@@ -215,7 +174,7 @@ end
 --   if not keys then
 --     return false
 --   end
---   local keyString = build_key_string(keys)
+--   local keyString = Utils.build_key_string(keys)
 --
 --   if keyString:find(' ci') or keyString:find(' di') or keyString:find(' yi') then
 --     return false
@@ -236,16 +195,8 @@ end
 --  suggestion:
 --
 local function vimregister_suggestion(keys, perBufferState, runtimeState)
-  local keyString = build_key_string(keys)
-  --  TEST:
-  --   vim.notify(
-  --   'now_ms() : '
-  --     .. tostring(Utils.now_ms())
-  --     .. 'runtimeState.suppressSuggestionsUntilMilliseconds : '
-  --     .. vim.inspect(runtimeState)
-  --     .. 'Config.undoSuppressionMilliseconds : '
-  --     .. tostring(Config.get().undoSuppressionMilliseconds)
-  -- )
+  local keyString = Utils.build_key_string(keys)
+
   if
     (keyString:find(' d ') or keyString:find(' c '))
     and (vim.uv.hrtime() and (os.clock() or true))
@@ -261,7 +212,7 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
         -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
         perBufferState.evidenceCounters.yankHuntingEvidenceCount = perBufferState.evidenceCounters.yankHuntingEvidenceCount
           + 1
-        return 'Vim Register tip: use `"_d` / `"_c` to avoid overwriting your yank when deleting/changing.'
+        return 'Vim Register tip: use ` "_d ` / ` "_c ` to avoid overwriting your yank when deleting/changing.'
       end
     end
   end
@@ -269,8 +220,6 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
   local pasteCount = 0
   local yankCount = 0
   for _, token in ipairs(keys) do
-    -- TEST:
-    -- vim.notify( 'token: ' .. token .. ' pasteCount: ' .. pasteCount .. ' yankCount: ' .. yankCount, 4)
     if token == 'p' or token == 'P' then
       pasteCount = pasteCount + 1
     end
@@ -278,17 +227,16 @@ local function vimregister_suggestion(keys, perBufferState, runtimeState)
       yankCount = yankCount + 1
     end
   end
-  -- TEST:
-  -- vim.notify('pasteCount: ' .. pasteCount .. ' | yankCount: ' .. yankCount)
+
   if pasteCount >= 3 then
     -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
     perBufferState.evidenceCounters.yankHuntingEvidenceCount = perBufferState.evidenceCounters.yankHuntingEvidenceCount
       + 1
-    return 'Vim Register tip: `"0p` pastes your most recent yank.'
+    return 'Vim Register tip: ` "0p ` pastes your most recent yank.'
   end
 
   if yankCount >= 4 then
-    return 'Clipboard tip: `"+y` yanks to system clipboard and `"+p` pastes.'
+    return 'Clipboard tip: ` "+y ` yanks to system clipboard and ` "+p ` pastes.'
   end
 
   return nil
@@ -301,12 +249,13 @@ end
 --
 local function jumplist_suggestion(episode, keys, perBufferState)
   local traveled = math.abs(episode.to.row - episode.from.row)
-    + math.abs(episode.to.col - episode.from.col)
+  -- + math.abs(episode.to.col - episode.from.col)  --<-- col travel relevent??
+  -- TODO: add 40 to Config
   if traveled < 40 then
     return nil
   end
 
-  local keyString = build_key_string(keys)
+  local keyString = Utils.build_key_string(keys)
   local usedJumpKeys = keyString:find('<C%-o>')
     or keyString:find('<C%-i>')
     or keyString:find(' `` ')
@@ -318,7 +267,8 @@ local function jumplist_suggestion(episode, keys, perBufferState)
   -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
   perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount = perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount
     + 1
-  return 'Navigation tip: use jumplist — `<C-o>` back, `<C-i>` forward. Also ```` returns to last jump.'
+
+  return ' --JUMPLIST SUGGESTION--\n\n ` <C-o> ` backward | ` <C-i> ` forward | ` `` ` toggle'
 end
 
 -- INFO: MARKS SUGGESTION
@@ -327,7 +277,7 @@ end
 --  suggestion: Yo Homie!  Use marks!
 --
 local function marks_suggestion(episode, keys, perBufferState, config)
-  local keyString = build_key_string(keys)
+  local keyString = Utils.build_key_string(keys)
   if keyString:find(' m') or keyString:find(" '") or keyString:find(' `') then
     return nil
   end
@@ -338,7 +288,7 @@ local function marks_suggestion(episode, keys, perBufferState, config)
   ) + 1
 
   if perBufferState.hotspotVisitCountsByPositionKey[key] >= config.hotspotRevisitThreshold then
-    return "Marks tip: set a mark with `ma`, jump with `'a` (line) or `` `a `` (exact)."
+    return "Marks tip: set a mark with ` ma `, jump with ` 'a ` (line) or `` `a `` (exact)."
   end
 
   return nil
@@ -351,6 +301,7 @@ end
 --
 local function treesitter_hint(episode, perBufferState)
   local movedLines = math.abs(episode.to.row - episode.from.row)
+  -- TODO: Add 40 to Config
   if movedLines < 40 then
     return nil
   end
@@ -368,7 +319,8 @@ local function treesitter_hint(episode, perBufferState)
   -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
   perBufferState.evidenceCounters.treesitterMotionEvidenceCount = perBufferState.evidenceCounters.treesitterMotionEvidenceCount
     + 1
-  return 'Tip: with Treesitter textobjects, you can jump/select functions/classes.'
+
+  return 'Use Treesitter, you can jump/select functions/classes.'
 end
 
 -- INFO: YANKS EXIST SUGGESTION
@@ -380,11 +332,13 @@ local function yank_ring_hint(perBufferState)
   if not perBufferState.yankRing or #perBufferState.yankRing == 0 then
     return nil
   end
+
   local latest = perBufferState.yankRing[1]
   if not latest or not latest.text then
     return nil
   end
-  return 'Yank tip: You have recent yanks! -—Remember `"0p` for last yank. (Your default Vim Register can be overwritten by deletes.)'
+  -- TODO: check for existing keymap vim.keymap.set("x", "<leader>p", '"_dP') , if exists suggest "_dP
+  return 'Recent yanks -—Remember ` "0p ` for last yank. (Your default Vim Register can be overwritten by deletes.)'
 end
 
 -- ----------------------------------------------------------------------------
@@ -398,10 +352,8 @@ function M.suggest(episode, context)
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
-
   local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
 
-  -- Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
   local sugg1 = count_compression(recentKeys)
   if sugg1 then
     return sugg1, recentKeys
@@ -414,14 +366,12 @@ function M.suggest(episode, context)
       + 1
     return sugg2, recentKeys
   end
-  -- if detect_surround_like(recentKeys, operatorRange) then --
-  --   perBufferState.evidenceCounters.surroundLikeEvidenceCount = perBufferState.evidenceCounters.surroundLikeEvidenceCount
-  --     + 1
-  --   return 'Delimiter tip: use text objects like `ci"`, `ci(`, `ci{` (and `ca...`).', recentKeys
-  -- end
+  if detect_surround_like(recentKeys, operatorRange) then --
+    perBufferState.evidenceCounters.surroundLikeEvidenceCount = perBufferState.evidenceCounters.surroundLikeEvidenceCount
+      + 1
+    --   return 'Delimiter tip: use text objects like `ci"`, `ci(`, `ci{` (and `ca...`).', recentKeys
+  end
 
-  -- TEST:
-  -- vim.notify('recentKeys ' .. #recentKeys)
   local sugg3 = vimregister_suggestion(recentKeys, perBufferState, runtimeState)
   if sugg3 then
     return sugg3, recentKeys
@@ -429,7 +379,7 @@ function M.suggest(episode, context)
 
   local sugg4 = jumplist_suggestion(episode, recentKeys, perBufferState)
   if sugg4 then
-    return sugg4, recentKeys
+    return sugg4, nil
   end
 
   local sugg5 = marks_suggestion(episode, recentKeys, perBufferState, config)
@@ -448,10 +398,14 @@ function M.suggest(episode, context)
   end
 
   -- NOTE: This will be pretty complex.  Just a simple start for now.
-  local sugg8 = Plugins.recommend(perBufferState, context)
-  if sugg8 then
-    return sugg8, recentKeys
+  if config.pluginRecommendations.enabled then
+    local sugg8 = Plugins.recommend(perBufferState, context)
+    if sugg8 then
+      return sugg8, recentKeys
+    end
   end
+
+  -- TODO: Add PROVIDER HOOKS { FUTURE }
 
   return nil, recentKeys
 end
