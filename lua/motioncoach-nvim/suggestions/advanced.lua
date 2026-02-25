@@ -164,30 +164,40 @@ local function text_object_suggestion(keys, operatorRange, get_line)
 end
 -- ============================================================================
 
--- ---@param keys {}?
--- ---@param operatorRange {}?
--- ---@return boolean
--- local function detect_surround_like(keys, operatorRange)
---   if not operatorRange then
---     return false
---   end
---   if not keys then
---     return false
---   end
---   local keyString = Utils.build_key_string(keys)
---
---   if keyString:find(' ci') or keyString:find(' di') or keyString:find(' yi') then
---     return false
---   end
---
---   local usedHunting =
---     has_any_key(keys, { ['f'] = true, ['F'] = true, ['t'] = true, ['T'] = true, ['%'] = true })
---   local usedChangeOrDelete = (
---     or keyString:find(' s ')
---     or keyString:find(' d ')
---   ) ~= nil
---   return usedHunting and usedChangeOrDelete
--- end
+local function has_any_key(keys, keySet)
+  for _, k in ipairs(keys) do
+    if keySet[k] then
+      return true
+    end
+  end
+  return false
+end
+
+---@param keys {}?
+---@param operatorRange {}?
+---@return boolean
+local function detect_surround_like(keys, operatorRange)
+  if not operatorRange then
+    return false
+  end
+  if not keys then
+    return false
+  end
+  local keyString = Utils.build_key_string(keys)
+
+  if keyString:find(' ci') or keyString:find(' di') or keyString:find(' yi') then
+    return false
+  end
+
+  local usedHunting =
+    has_any_key(keys, { ['f'] = true, ['F'] = true, ['t'] = true, ['T'] = true, ['%'] = true })
+  local usedChangeOrDelete = (
+    keyString:find(' c ')
+    or keyString:find(' s ')
+    or keyString:find(' d ')
+  ) ~= nil
+  return usedHunting and usedChangeOrDelete
+end
 
 -- INFO: VIMREGISTER SUGGESTION
 --

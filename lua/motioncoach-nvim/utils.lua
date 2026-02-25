@@ -41,16 +41,6 @@ function M.build_key_string(keys)
   return ' ' .. table.concat(keys, ' ') .. ' '
 end
 
--- prob won-t need this anymore
--- local function has_any_key(keys, keySet)
---   for _, k in ipairs(keys) do
---     if keySet[k] then
---       return true
---     end
---   end
---   return false
--- end
-
 -- ----------------------------------------------------------------
 -- ----------------------------------------------------------------
 -- got the following from https://github.com/ThePrimeagen/harpoon/blob/harpoon2/lua/harpoon/utils.lua
@@ -69,6 +59,7 @@ function M.split(str, sep)
   for s in string.gmatch(str, '([^' .. sep .. ']+)') do
     table.insert(t, s)
   end
+
   return t
 end
 

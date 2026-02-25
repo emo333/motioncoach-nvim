@@ -23,11 +23,6 @@ local function ring_push(token)
   runtimeState.keyRingBuffer[writeIndex] = { t = timestamp, k = token }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
-  -- vim.notify('here in ring_push')
-  -- vim.notify(#runtimeState.keyRingBuffer)
-  -- local msg = tostring(vim.fn.bufnr())
-  -- TEST:
-  -- vim.notify('runtimeState.keyRingBuffer' .. msg)
 end
 
 ---@param windowMilliseconds number
@@ -54,8 +49,7 @@ function M.get_recent_keys(windowMilliseconds)
       break
     end
   end
-  -- TEST:
-  -- vim.notify(vim.inspect(keys), 4)
+
   return keys
 end
 

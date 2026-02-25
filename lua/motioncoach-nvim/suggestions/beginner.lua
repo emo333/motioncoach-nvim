@@ -25,6 +25,7 @@ local function detect_last_operator_range() --- Gets the range of the last opera
   if startPos[2] == 0 or endPos[2] == 0 then
     return nil
   end
+
   return {
     bufferNumber = startPos[1],
     startRow = startPos[2],
@@ -82,6 +83,7 @@ end
 ---@return number | nil
 local function first_nonblank_col(lineText)
   local _, endingIndex = lineText:find('^%s*')
+
   return (endingIndex or 0)
 end
 
@@ -132,6 +134,7 @@ function M.suggest(episode, context)
     if absLineDelta >= 10 then
       local which = (lineDelta > 0) and '` G ` to move to end of file'
         or '` gg ` to move to top of file'
+
       return ('Consider using %s'):format(which)
     end
   end
@@ -153,11 +156,13 @@ function M.suggest(episode, context)
 
     - to see the count of lines from the line your are on]]
     end
+
     return formattedMotion .. rln
   end
 
   if absLineDelta >= 200 then
     local which = (lineDelta > 0) and '` / ` (search downward)' or '` ? ` (search upward)'
+
     return ('Huge move: consider %s for your target text'):format(which)
   end
 
@@ -165,6 +170,7 @@ function M.suggest(episode, context)
     -- FIX: if last keys{from keylogger} were NOT '<C-d>' or '<C-u>'
     -- NOTE: possibly handle this by finalizing episode on detection of '<C-d>' or '<C-u>'
     local scroll = (lineDelta > 0) and ' <C-d> ' or ' <C-u> '
+
     return ('Big move: try `%s` to scroll'):format(scroll)
   end
 
