@@ -41,6 +41,32 @@ function M.build_key_string(keys)
   return ' ' .. table.concat(keys, ' ') .. ' '
 end
 
+---@return {} | nil
+function M.detect_last_operator_range()
+  -- vim.fn.getpos("'[") gets starting position of last operation (eg. y c d x )
+  local startPos = vim.fn.getpos("'[")
+  -- local startPos = vim.fn.getpos("'^")
+  local endPos = vim.fn.getpos("']")
+  if not startPos or not endPos then
+    return nil
+  end
+  if startPos[2] == 0 or endPos[2] == 0 then
+    return nil
+  end
+  -- la;ksdhjgf;laksjhd  wooooord  another word
+  -- vim.fn.getjumplist() gets jummplist as a {} with each jump as a sub table
+  -- local jumps, last_idx = unpack(vim.fn.getjumplist())
+  -- print('vim.inspect(jumps): ' .. vim.inspect(jumps))
+
+  return {
+    bufferNumber = startPos[1],
+    startRow = startPos[2],
+    startCol = startPos[3] - 1,
+    endRow = endPos[2],
+    endCol = endPos[3] - 1,
+  }
+end
+
 -- ----------------------------------------------------------------
 -- ----------------------------------------------------------------
 -- got the following from https://github.com/ThePrimeagen/harpoon/blob/harpoon2/lua/harpoon/utils.lua

@@ -9,12 +9,12 @@
 
 local M = {}
 
-local Advanced = require('motioncoach-nvim.suggestions.advanced')
-local Beginner = require('motioncoach-nvim.suggestions.beginner')
+local Advanced = require('motioncoach-nvim.suggestions.advanced.advanced')
+local Beginner = require('motioncoach-nvim.suggestions.beginner.beginner')
 local Config = require('motioncoach-nvim.config')
 local Formatter = require('motioncoach-nvim.formatter')
 local Keylog = require('motioncoach-nvim.keylog')
-local Logger = require('motioncoach-nvim.logger')
+-- local Logger = require('motioncoach-nvim.logger')
 local Notify = require('motioncoach-nvim.notify')
 local VimRegisters = require('motioncoach-nvim.vimregisters')
 local State = require('motioncoach-nvim.state')
@@ -183,17 +183,17 @@ local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   }
 end
 
-local function restart_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
-  local runtimeState = State.get()
-  runtimeState.currentEpisode = {
-    bufferNumber = bufferNumber,
-    from = cursorPos,
-    to = cursorPos,
-    timeFromMs = currentTimeMs,
-    timeToMs = currentTimeMs,
-    mode = modeString,
-  }
-end
+-- local function restart_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
+--   local runtimeState = State.get()
+--   runtimeState.currentEpisode = {
+--     bufferNumber = bufferNumber,
+--     from = cursorPos,
+--     to = cursorPos,
+--     timeFromMs = currentTimeMs,
+--     timeToMs = currentTimeMs,
+--     mode = modeString,
+--   }
+-- end
 
 -- INFO: When Homie moves the cursor, do all this...
 local function on_cursor_moved()

@@ -4,80 +4,11 @@
 --  /_/_/_/\___/\__/_/\___/_//_/\__/\___/\_,_/\__/_//_/
 --  ---------------------------------------------------
 
-local M = {}
-
----@alias Episode {value: table, context: {row: number, col: number}}
----@alias Context {value: table, context: {row: number, col: number}}
-
 ---@class Beginner
----@field suggest (fun(episode: Episode, context: Context): string?)
+local M = {}
 
 local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
-
----@return {} | nil
-local function detect_last_operator_range() --- Gets the range of the last operator and puts it in a nice little table
-  local startPos = vim.fn.getpos("'^")
-  local endPos = vim.fn.getpos("']")
-  if not startPos or not endPos then
-    return nil
-  end
-  if startPos[2] == 0 or endPos[2] == 0 then
-    return nil
-  end
-
-  return {
-    bufferNumber = startPos[1],
-    startRow = startPos[2],
-    startCol = startPos[3] - 1,
-    endRow = endPos[2],
-    endCol = endPos[3] - 1,
-  }
-end
-
---  TODO: may not need these functions in this module... only need it if we going to send Homie his keystrokes.
---
--- local function build_key_string(keys)
---   return ' ' .. table.concat(keys, ' ') .. ' '
--- end
---
--- local function has_any_key(keys, keySet) --- Do it have keys??
---   for _, k in ipairs(keys) do
---     if keySet[k] then
---       return true
---     end
---   end
---   return false
--- end
---
--- ---@function --turns concurrent keys into single string.  example: `h`,`h`,`h`,`h` ~ `4h`
--- ---@return string | nil
--- local function count_compression(keys)
---   local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
---   local lastToken, repeatCount = nil, 0
---
---   for _, token in ipairs(keys) do
---     if allowed[token] then
---       if token == lastToken then
---         repeatCount = repeatCount + 1
---       else
---         lastToken, repeatCount = token, 1
---       end
---     else
---       lastToken, repeatCount = nil, 0
---     end
---   end
---
---   if lastToken and repeatCount >= 5 then
---     return ('You pressed `%s` %d times. Try `%d%s` (count + motion).'):format(
---       lastToken,
---       repeatCount,
---       repeatCount,
---       lastToken
---     )
---   end
---   return nil
--- end
 
 ---@param lineText string
 ---@return number | nil
@@ -87,6 +18,8 @@ local function first_nonblank_col(lineText)
   return (endingIndex or 0)
 end
 
+---@param episode {}
+---@param context {}
 ---@return string | nil # The suggestion message | nil
 function M.suggest(episode, context)
   local config = Config.get()
