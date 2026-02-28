@@ -345,6 +345,11 @@ function M.install_autocmds()
         return '<ScrollWheelDown>'
       end, { expr = true, noremap = true, silent = true, buffer = true })
 
+      vim.keymap.set('n', '<leader>mv', function()
+        local state = require('motioncoach-nvim.state').get()
+        print('state = ' .. vim.inspect(state))
+      end)
+
       -- override lazyvim keymappings:
       -- LazyVim keymaps j and k with a v:count to g so we have to override those keymaps in order for keylogging to function correctly
       vim.keymap.set(

@@ -17,6 +17,10 @@ local function ring_push(token)
   local config = Config.get()
   local runtimeState = State.get()
 
+  if config.coachingLevel == 0 then
+    runtimeState.keyRingBuffer = {}
+    return
+  end
   local timestamp = Utils.now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
 
@@ -86,15 +90,24 @@ function M.install_if_needed()
       end)
     end
     if key == scrollwheeldown then
-      vim.schedule(function()
-        -- print('Logged: <ScrollwheelDown> pressed')
-      end)
+      return
+      -- vim.schedule(function()
+      --   -- print('Logged: <ScrollwheelDown> pressed')
+      -- end)
     end
-    if typed == g then
-      vim.schedule(function()
-        -- print('Logged: g pressed')
-      end)
+    if key == g and (typed == 'j' or typed == 'k') then
+      return
+      -- vim.schedule(function()
+      --   -- print('Logged: g pressed')
+      -- end)
     end
+    if key == g then
+      key = 'g'
+      -- vim.schedule(function()
+      --   -- print('Logged: g pressed')
+      -- end)
+    end
+
     if key == z then
       vim.schedule(function()
         -- print('Logged: z pressed')
@@ -102,8 +115,16 @@ function M.install_if_needed()
     end
     -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
     local readable = vim.fn.keytrans(key)
+
+    if readable:find('^<t') then
+      return
+    end
+
+    -- FIX: IF SAME ts exists in keyring then return (exclude)
+
     -- print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
-    ring_push(key)
+    -- ring_push(key)
+    ring_push('key: ' .. key .. ' typed: ' .. typed .. ' readable: ' .. readable)
   end)
   -- vim.on_key(function(key, typed)
   --   if typed ~= "" then
