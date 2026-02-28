@@ -317,11 +317,14 @@ function M.set_coaching_level(level)
   if level == 0 then
     Keylog.uninstall_if_needed()
     finalize_episode()
+    vim.api.nvim_clear_autocmds({ group = 'MotionCoach' })
     notify('Coaching OFF')
   elseif level == 1 then
+    M.install_autocmds()
     Keylog.install_if_needed()
     notify('Beginner coaching ON (level 1).')
   else
+    M.install_autocmds()
     Keylog.install_if_needed()
     notify('Advanced coaching ON (level 2).')
   end

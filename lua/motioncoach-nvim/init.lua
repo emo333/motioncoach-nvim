@@ -15,8 +15,11 @@ local State = require('motioncoach-nvim.state')
 function MotionCoachNvim.setup(userConfig)
   Config.apply(userConfig or {})
   State.init()
-  Episodes.install_autocmds()
+  if Config.get().coachingLevel > 0 then
+    Episodes.install_autocmds()
+  end
   vim.api.nvim_create_autocmd('VimEnter', {
+    group = 'MotionCoach',
     once = true,
     callback = function()
       vim.keymap.set('n', '<leader>m', '[M]otion Coach -->')
