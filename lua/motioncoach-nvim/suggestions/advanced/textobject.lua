@@ -8,6 +8,7 @@
 local M = {}
 
 local Utils = require('motioncoach-nvim.utils')
+local Config = require('motioncoach-nvim.config')
 
 --  detection:
 --    1. Homie deletes a char, word, or block(chunk)
@@ -27,11 +28,14 @@ function M.text_object_suggestion(keys, get_line)
   if not operatorRange then
     return nil
   end
+
+  -- TEST:
   vim.notify(
     vim.inspect(
       'stCOL: ' .. operatorRange.startCol .. ' to endCOL: ' .. vim.inspect(operatorRange.endCol)
     )
   )
+
   local keyString = Utils.build_key_string(keys)
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
@@ -60,6 +64,9 @@ function M.text_object_suggestion(keys, get_line)
     return nil
   end
 
+  -- TODO: implement brief/long suggestion messages for every suggestion
+  local longMsg = Config.get().longSuggestMessages
+
   if operatorRange.startRow == operatorRange.endRow then
     local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
     local a = Utils.clampNumber(operatorRange.startCol + 1, 1, #lineText)
@@ -71,7 +78,22 @@ function M.text_object_suggestion(keys, get_line)
 
     -- NOTE: WORDS ciw diw yiw caw daw yaw
     if segment:match('^%w[%w_]*$') then
-      return 'Text Object:\n  try ` ciw ` ` diw ` ` yiw ` ` caw ` ` daw ` ` yaw `\n to operate on a word.'
+      if longMsg then
+        return [[
+    --Text Object--
+
+    to operate on a word use:
+
+    ` ciw ` [c]hange [i]nside [w]ord
+    ` diw ` [d]elete [i]nside [w]ord
+    ` yiw ` [y]ank [i]nside [w]ord
+    ` caw ` [c]hange [a]round [w]ord
+    ` daw ` [d]elete [a]round [w]ord
+    ` yaw ` [y]ank [a]round [w]ord
+          ]]
+      else
+        return 'Text Object:\n  try ` ciw ` ` diw ` ` yiw ` ` caw ` ` daw ` ` yaw `\n to operate on a word.'
+      end
     end
 
     -- NOTE: DOUBLE QUOTES ci" di" yi"

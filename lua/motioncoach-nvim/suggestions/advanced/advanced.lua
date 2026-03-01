@@ -19,8 +19,6 @@ local Treesitter = require('motioncoach-nvim.suggestions.advanced.treesitter')
 local VimRegister = require('motioncoach-nvim.suggestions.advanced.vimregister')
 local Yanks = require('motioncoach-nvim.suggestions.advanced.yanks')
 
--- ----------------------------------------------------------------------------
---
 -- INFO: THE MAIN FUNCTION OF ADVANCED MODE COACHING SUGGESTIONS
 --
 ---@param episode {}

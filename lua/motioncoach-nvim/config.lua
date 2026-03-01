@@ -42,6 +42,9 @@ local defaultConfig = {
   ---
   --- default 3
   hotspotRevisitThreshold = 3,
+  --- Display very descriptive suggestions (lenthy messages)
+  --- default false
+  longSuggestMessages = false,
 
   --- Configuration for the Formatter(which is a helper for formatting the actual notification messages)
   typedKeysFormatter = {
