@@ -385,7 +385,11 @@ function M.install_autocmds()
       if (not Config.get().captureInsertModeKeys) and vim.api.nvim_get_mode().mode == 'i' then
         return
       end
-      on_cursor_moved()
+      if vim.bo.bh == '' then
+        on_cursor_moved()
+      else
+        return
+      end
     end,
   })
 

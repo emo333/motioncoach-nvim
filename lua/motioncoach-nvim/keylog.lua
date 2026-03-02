@@ -67,52 +67,33 @@ function M.install_if_needed()
   runtimeState.onKeyHookInstalled = true
 
   -- TODO: handle double taps of j and k (they are getting remapped to g)
-  local ctrl_u = vim.api.nvim_replace_termcodes('<C-u>', true, true, true)
-  local ctrl_d = vim.api.nvim_replace_termcodes('<C-d>', true, true, true)
-  local scrollwheelup = vim.api.nvim_replace_termcodes('<ScrollwheelUp>', true, true, true)
-  local scrollwheeldown = vim.api.nvim_replace_termcodes('<ScrollwheelDown>', true, true, true)
-  local g = vim.api.nvim_replace_termcodes('g', true, true, true)
-  local z = vim.api.nvim_replace_termcodes('<z>', true, true, true)
   vim.on_key(function(key, typed)
+    -- only log for certain buffer types:
+    if vim.bo.bh ~= '' then
+      return
+    end
+
+    local ctrl_u = vim.api.nvim_replace_termcodes('<C-u>', true, true, true)
+    local ctrl_d = vim.api.nvim_replace_termcodes('<C-d>', true, true, true)
+    local scrollwheelup = vim.api.nvim_replace_termcodes('<ScrollwheelUp>', true, true, true)
+    local scrollwheeldown = vim.api.nvim_replace_termcodes('<ScrollwheelDown>', true, true, true)
+    local g = vim.api.nvim_replace_termcodes('g', true, true, true)
+    local z = vim.api.nvim_replace_termcodes('<z>', true, true, true)
     if key == ctrl_u then
       vim.schedule(function()
-        -- print('Logged: <C-u> pressed')
+        -- print('Logged: <C-u> p')
       end)
     end
-    if key == ctrl_d then
-      vim.schedule(function()
-        -- print('Logged: <C-d> pressed')
-      end)
-    end
-    if key == scrollwheelup then
-      vim.schedule(function()
-        -- print('Logged: <ScrollwheelUp> pressed')
-      end)
-    end
-    if key == scrollwheeldown then
+    if key == scrollwheeldown or key == scrollwheelup then
       return
-      -- vim.schedule(function()
-      --   -- print('Logged: <ScrollwheelDown> pressed')
-      -- end)
     end
     if key == g and (typed == 'j' or typed == 'k') then
       return
-      -- vim.schedule(function()
-      --   -- print('Logged: g pressed')
-      -- end)
     end
     if key == g then
       key = 'g'
-      -- vim.schedule(function()
-      --   -- print('Logged: g pressed')
-      -- end)
     end
 
-    if key == z then
-      vim.schedule(function()
-        -- print('Logged: z pressed')
-      end)
-    end
     -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
     local readable = vim.fn.keytrans(key)
 
@@ -125,7 +106,7 @@ function M.install_if_needed()
     -- print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
     -- ring_push(key)
     ring_push('key: ' .. key .. ' typed: ' .. typed .. ' readable: ' .. readable)
-  end)
+  end, runtimeState.namespace)
   -- vim.on_key(function(key, typed)
   --   if typed ~= "" then
   --     -- This was physically pressed by the user
