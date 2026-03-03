@@ -24,7 +24,8 @@ local function ring_push(token)
   local timestamp = Utils.now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
 
-  runtimeState.keyRingBuffer[writeIndex] = { t = timestamp, k = token }
+  runtimeState.keyRingBuffer[writeIndex] =
+    { t = timestamp, k = token, bufnr = vim.api.nvim_get_current_buf() }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
 end
@@ -79,10 +80,8 @@ function M.install_if_needed()
     local scrollwheeldown = vim.api.nvim_replace_termcodes('<ScrollwheelDown>', true, true, true)
     local g = vim.api.nvim_replace_termcodes('g', true, true, true)
     local z = vim.api.nvim_replace_termcodes('<z>', true, true, true)
-    if key == ctrl_u then
-      vim.schedule(function()
-        -- print('Logged: <C-u> p')
-      end)
+    if key == ctrl_u or key == ctrl_d then
+      return
     end
     if key == scrollwheeldown or key == scrollwheelup then
       return
@@ -94,42 +93,27 @@ function M.install_if_needed()
       key = 'g'
     end
 
-    -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
-    local readable = vim.fn.keytrans(key)
+    -- ignore anything unexpected
+    if type(key) ~= 'string' or key == '' then
+      return
+    end
 
+    -- Use vim.fn.keytrans to turn raw bytes into readable <C-a> style strings
+    -- keytrans itself can throw in rare cases; protect it with a pcall()
+    local ok, readable = pcall(vim.fn.keytrans, key)
+    if not ok or type(readable) ~= 'string' or readable == '' then
+      return
+    end
+    -- local readable = vim.fn.keytrans(key)
     if readable:find('^<t') then
       return
     end
 
     -- FIX: IF SAME ts exists in keyring then return (exclude)
 
-    -- print(string.format('Raw (LHS): %s | Typed: %s', readable, typed))
     -- ring_push(key)
     ring_push('key: ' .. key .. ' typed: ' .. typed .. ' readable: ' .. readable)
   end, runtimeState.namespace)
-  -- vim.on_key(function(key, typed)
-  --   if typed ~= "" then
-  --     -- This was physically pressed by the user
-  --   end
-  -- end)
-  --   vim.on_key(function(key, rawKeyBytes)
-  --     -- Be maximally defensive: ignore anything unexpected.
-  --     if type(rawKeyBytes) ~= 'string' or rawKeyBytes == '' then
-  --       return
-  --     end
-  --     -- TEST:
-  --     -- vim.notify(rawKeyBytes)
-  --
-  --     -- keytrans itself can throw in rare cases; protect it.
-  --     local ok, normalized = pcall(vim.keytrans, rawKeyBytes)
-  --     -- if not ok or type(normalized) ~= 'string' or normalized == '' then
-  --     --   return
-  --     -- end
-  --     -- vim.notify('normalized: ' .. normalized)
-  --     -- No mode checks, no notify, no vim.api calls here. Just store.
-  --     -- ring_push(normalized)
-  --     ring_push(rawKeyBytes)
-  --   end, runtimeState.namespace)
 end
 
 -- UnHook the Keylogger
