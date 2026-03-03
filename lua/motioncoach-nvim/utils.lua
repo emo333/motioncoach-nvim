@@ -53,7 +53,6 @@ function M.detect_last_operator_range()
   if startPos[2] == 0 or endPos[2] == 0 then
     return nil
   end
-  -- la;ksdhjgf;laksjhd  wooooord  another word
   -- vim.fn.getjumplist() gets jummplist as a {} with each jump as a sub table
   -- local jumps, last_idx = unpack(vim.fn.getjumplist())
   -- print('vim.inspect(jumps): ' .. vim.inspect(jumps))
