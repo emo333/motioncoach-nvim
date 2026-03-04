@@ -25,6 +25,8 @@ function M.get()
   return runtimeState
 end
 
+--- does nothing
+---@deprecated
 function M.init()
   -- didn't need this but leaving it here in case have a need later
 end

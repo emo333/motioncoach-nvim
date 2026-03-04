@@ -7,7 +7,7 @@
 ---@class Beginner
 local M = {}
 
-local Config = require('motioncoach-nvim.config')
+-- local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 
 ---@param lineText string
@@ -22,10 +22,10 @@ end
 ---@param context {}
 ---@return string | nil # The suggestion message | nil
 function M.suggest(episode, context)
-  local config = Config.get()
+  -- local config = Config.get()
   -- local runtimeState = context.runtimeState
   -- local perBufferState = context.perBufferState
-  local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
+  -- local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
   local from, to = episode.from, episode.to
   local lineDelta = to.row - from.row
   local colDelta = to.col - from.col
@@ -37,7 +37,7 @@ function M.suggest(episode, context)
 
   if absLineDelta == 0 then
     if to.col == 0 then
-      if not Keylog.key_exists_in_keyring(recentKeys, '0') then
+      if not Keylog.key_exists_in_keyring(nil, '0') then
         return 'Try ` 0 ` to jump to start of line'
       end
     end

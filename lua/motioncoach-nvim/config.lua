@@ -8,13 +8,14 @@
 local M = {}
 
 --  TODO: reconsider (get opinions of avid vim users) all these defaults before publishing
+
 local defaultConfig = {
   --- The coaching level on start of NeoVim session
   --- default 1 (Beginner)
   coachingLevel = 1,
   --- The logging level of notifications
-  --- default WARN(3)
-  notifyLogLevel = vim.log.levels.WARN,
+  --- default INFO(2)
+  notifyLogLevel = vim.log.levels.INFO,
   --- Time between an Episode finalizing and a new Episode starting
   --- default 700ms
   episodeGapMilliseconds = 700,

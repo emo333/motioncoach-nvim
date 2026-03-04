@@ -7,6 +7,7 @@
 -- INFO: An Episode is a tracked series of cursor movements (Vim Motions) and/or key strokes
 -- the premise is to limit the count of key strokes to achieve the movement of the cursor (Vim Motion).
 
+---@class Episodes
 local M = {}
 
 local Advanced = require('motioncoach-nvim.suggestions.advanced.advanced')
@@ -116,9 +117,6 @@ end
 local function finalize_episode()
   local config = Config.get()
   local runtimeState = State.get()
-  -- local bufferNumber = vim.api.nvim_get_current_buf()
-  -- local perBufferState = State.get_or_create_per_buffer(bufferNumber)
-
   local episode = runtimeState.currentEpisode
 
   runtimeState.currentEpisode = nil
@@ -133,7 +131,6 @@ local function finalize_episode()
   end
 
   local naive = estimate_naive_cost(episode)
-  -- vim.notify(tostring(naive))
   if naive < config.minimumNaiveCostToCoach then
     return
   end
@@ -242,23 +239,6 @@ local function on_cursor_moved()
     return
   end
 
-  local function has_exclude_match(recentKeys, excludeKeys)
-    local lookup = {}
-    for _, value in pairs(excludeKeys) do
-      lookup[value] = true
-    end
-
-    for _, value in pairs(recentKeys) do
-      if lookup[value] then
-        return value
-      end
-    end
-
-    return nil
-  end
-
-  -- TODO: refactor the key check into keylog.lua
-
   local excludeKeys = {
     '\27',
     'w',
@@ -286,18 +266,10 @@ local function on_cursor_moved()
     '<ScrollWheelUp>',
     '<ScrollWheelDown>',
   }
-  -- local config = Config.get()
 
   currentMode = vim.api.nvim_get_mode().mode
-  local keys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
-  -- TEST:
-  -- vim.notify('lastKey: ' .. vim.inspect(keys))
-  -- vim.notify('excludeKeys: ' .. vimpect(excludeKeys))
-  -- vim.notify('keys: ' .. vim.inspect(keys))
-
-  local match = has_exclude_match(keys, excludeKeys)
+  local match = Keylog.has_exclude_match(excludeKeys)
   if match then
-    -- vim.notify(match .. ' key ::::::::::::EXCLUSION')
     start_episode(bufferNumber, cursorPos, currentTimeMs, currentMode)
     return
   end
@@ -306,7 +278,8 @@ local function on_cursor_moved()
   episode.timeToMs = currentTimeMs
 end
 
----@param level number | nil 0 = off | 1 = Beginner | 2 = Advanced
+---@return nil ?
+---@param level number | nil 0 = off | 1 = Beginner | 2 = Advanced {nil = 0}
 function M.set_coaching_level(level)
   level = tonumber(level) or 0
   level = Utils.clampNumber(level, 0, 2)
@@ -333,51 +306,22 @@ end
 function M.install_autocmds()
   local augroup = vim.api.nvim_create_augroup('MotionCoach', { clear = true })
 
+-- stylua: ignore start
   vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter' }, {
     group = augroup,
     callback = function()
-      vim.keymap.set('n', '<ScrollWheelUp>', function()
-        vim.notify_once('Scrolling with mouse is cheating...')
-        return '<ScrollWheelUp>'
-      end, { expr = true, noremap = true, buffer = true })
-      vim.keymap.set('n', '<ScrollWheelDown>', function()
-        vim.notify_once('Scrolling with mouse is cheating...')
-        return '<ScrollWheelDown>'
-      end, { expr = true, noremap = true, silent = true, buffer = true })
-
-      vim.keymap.set('n', '<leader>mv', function()
-        local state = require('motioncoach-nvim.state').get()
-        print('state = ' .. vim.inspect(state))
-      end)
-
+      vim.keymap.set('n', '<ScrollWheelUp>', function() vim.notify_once('Scrolling with mouse is cheating...') return '<ScrollWheelUp>' end, { expr = true, noremap = true, buffer = true })
+      vim.keymap.set('n', '<ScrollWheelDown>', function() vim.notify_once('Scrolling with mouse is cheating...') return '<ScrollWheelDown>' end, { expr = true, noremap = true, silent = true, buffer = true })
+      vim.keymap.set('n', '<leader>mv', function() local state = require('motioncoach-nvim.state').get() print('state = ' .. vim.inspect(state)) end)
       -- override lazyvim keymappings:
       -- LazyVim keymaps j and k with a v:count to g so we have to override those keymaps in order for keylogging to function correctly
-      vim.keymap.set(
-        { 'n', 'x' },
-        'j',
-        "v:count == 0 ? 'j' : 'j'",
-        { desc = 'Down', expr = true, silent = true, noremap = true }
-      )
-      vim.keymap.set(
-        { 'n', 'x' },
-        '<Down>',
-        "v:count == 0 ? 'j' : 'j'",
-        { desc = 'Down', expr = true, silent = true, noremap = true }
-      )
-      vim.keymap.set(
-        { 'n', 'x' },
-        'k',
-        "v:count == 0 ? 'k' : 'k'",
-        { desc = 'Up', expr = true, silent = true, noremap = true }
-      )
-      vim.keymap.set(
-        { 'n', 'x' },
-        '<Up>',
-        "v:count == 0 ? 'k' : 'k'",
-        { desc = 'Up', expr = true, silent = true, noremap = true }
-      )
+      vim.keymap.set( { 'n', 'x' }, 'j', "v:count == 0 ? 'j' : 'j'", { desc = 'Down', expr = true, silent = true, noremap = true })
+      vim.keymap.set( { 'n', 'x' }, '<Down>', "v:count == 0 ? 'j' : 'j'", { desc = 'Down', expr = true, silent = true, noremap = true })
+      vim.keymap.set( { 'n', 'x' }, 'k', "v:count == 0 ? 'k' : 'k'", { desc = 'Up', expr = true, silent = true, noremap = true })
+      vim.keymap.set( { 'n', 'x' }, '<Up>', "v:count == 0 ? 'k' : 'k'", { desc = 'Up', expr = true, silent = true, noremap = true })
     end,
   })
+  -- stylua: ignore end
 
   vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
     group = augroup,
@@ -412,25 +356,6 @@ function M.install_autocmds()
     group = augroup,
     callback = function(args)
       update_undo_suppression(args.buf)
-    end,
-  })
-
-  -- Commands
-  vim.api.nvim_create_user_command('MotionCoachOff', function()
-    M.set_coaching_level(0)
-  end, {})
-  vim.api.nvim_create_user_command('MotionCoachBeginner', function()
-    M.set_coaching_level(1)
-  end, {})
-  vim.api.nvim_create_user_command('MotionCoachAdvanced', function()
-    M.set_coaching_level(2)
-  end, {})
-  vim.api.nvim_create_user_command('MotionCoachLevel', function(opts)
-    M.set_coaching_level(tonumber(opts.args))
-  end, {
-    nargs = 1,
-    complete = function()
-      return { '0', '1', '2' }
     end,
   })
 end
