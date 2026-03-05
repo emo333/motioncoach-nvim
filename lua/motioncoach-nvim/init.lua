@@ -32,6 +32,9 @@ function MotionCoachNvim.setup(userConfig)
       vim.keymap.set('n', '<leader>m2', function()
         require('motioncoach-nvim').set_level(2)
       end, { desc = 'MotionCoach Advanced Level[2]' })
+      vim.keymap.set('n', '<leader>mt', function()
+        require('motioncoach-nvim').toggle_long_suggest_messages()
+      end, { desc = 'MotionCoach Long Messages' })
       -- Episodes.set_coaching_level(Config.get().coachingLevel)
 
       -- Commands
@@ -52,6 +55,9 @@ function MotionCoachNvim.setup(userConfig)
           return { '0', '1', '2' }
         end,
       })
+      vim.api.nvim_create_user_command('MotionCoachLongMessages', function()
+        Episodes.toggle_long_suggest_messages()
+      end, {})
       vim.notify(' [Enabled]  ` <leader>m ` to disable or set level', 2, { title = 'motioncoach' })
     end,
   })
@@ -65,6 +71,10 @@ end
 
 function MotionCoachNvim.level()
   return Config.get().coachingLevel
+end
+
+function MotionCoachNvim.toggle_long_suggest_messages()
+  Episodes.toggle_long_suggest_messages()
 end
 
 -- using for testing the issue with jj or kk quickly returning a g

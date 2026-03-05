@@ -303,6 +303,15 @@ function M.set_coaching_level(level)
   end
 end
 
+function M.toggle_long_suggest_messages()
+  local config = Config.get()
+  if config.longSuggestMessages then
+    config.longSuggestMessages = false
+  else
+    config.longSuggestMessages = true
+  end
+end
+
 function M.install_autocmds()
   local augroup = vim.api.nvim_create_augroup('MotionCoach', { clear = true })
 
