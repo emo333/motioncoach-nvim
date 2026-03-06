@@ -33,7 +33,7 @@ local defaultConfig = {
   keyRingBufferSize = 260,
   --- The time within that a "patern" of keys will be analyzed
   --- default 2000ms
-  keyPatternWindowMilliseconds = 2000,
+  keyPatternWindowMilliseconds = 4000,
   --- Capture command keys (eg. i a p o x d c r y u ...) -- If this is true, a lot more Advanced suggestions are enabled
   --- default false
   captureCommandLineKeys = false,

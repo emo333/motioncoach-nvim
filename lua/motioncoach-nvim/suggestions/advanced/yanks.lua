@@ -11,6 +11,11 @@ local M = {}
 --  suggestion: Yo Homie! You got stuff you have yanked in registers.  Remember, if you delete things, your yank registers can be overwritten!
 --
 function M.yank_ring_suggestion(perBufferState)
+  -- HACK: temp disable yank suggestion for debugging
+  if true then
+    return nil
+  end
+
   if not perBufferState.yankRing or #perBufferState.yankRing == 0 then
     return nil
   end
