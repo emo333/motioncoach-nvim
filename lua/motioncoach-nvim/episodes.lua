@@ -94,6 +94,10 @@ local function update_undo_suppression(bufferNumber)
   local runtimeState = State.get()
   local perBufferState = State.get_or_create_per_buffer(bufferNumber)
 
+  if not perBufferState then
+    return
+  end
+
   local undoTree = vim.fn.undotree()
   local currentSeq = undoTree and undoTree.seq_cur or nil
   if not currentSeq then
@@ -135,9 +139,13 @@ local function finalize_episode()
     return
   end
 
+  local perBufferState = State.get_or_create_per_buffer(episode.bufferNumber)
+  if not perBufferState then
+    return
+  end
   local context = {
     runtimeState = runtimeState,
-    perBufferState = State.get_or_create_per_buffer(episode.bufferNumber),
+    perBufferState = perBufferState, -- State.get_or_create_per_buffer(episode.bufferNumber),
     get_line = get_line,
   }
 
@@ -168,6 +176,10 @@ local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   -- TEST: Get info for the current buffer
   -- local current_buffer_info = vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]
   -- vim.notify(vim.inspect(vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]))
+
+  if vim.bo[bufferNumber].bh ~= '' then
+    return
+  end
 
   local runtimeState = State.get()
   runtimeState.currentEpisode = {
@@ -214,6 +226,10 @@ local function on_cursor_moved()
   end
 
   local bufferNumber = vim.api.nvim_get_current_buf()
+  if vim.bo[bufferNumber].bh ~= '' then
+    -- vim.notify('ON CURSOR MOVED HIDE BUF' .. vim.bo[bufferNumber].bh)
+    return
+  end
   update_undo_suppression(bufferNumber)
 
   local currentTimeMs = Utils.now_ms()

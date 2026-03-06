@@ -32,6 +32,9 @@ function M.init()
 end
 
 function M.get_or_create_per_buffer(bufferNumber)
+  if vim.bo[bufferNumber].bh ~= '' then --vim.bo.bh == '' then
+    return
+  end
   local existing = runtimeState.perBufferStateByBufferNumber[bufferNumber]
   if existing then
     return existing

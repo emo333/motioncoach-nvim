@@ -17,16 +17,18 @@ local Utils = require('motioncoach-nvim.utils')
 local function ring_push(token)
   local config = Config.get()
   local runtimeState = State.get()
-
   if config.coachingLevel == 0 then
     runtimeState.keyRingBuffer = {}
     return
   end
+
   local timestamp = Utils.now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
+  local c = vim.api.nvim_win_get_cursor(0)
+  local cursorPos = { row = c[1], col = c[2] }
 
   runtimeState.keyRingBuffer[writeIndex] =
-    { t = timestamp, k = token, bufnr = vim.api.nvim_get_current_buf() }
+    { t = timestamp, k = token, c = c, bufnr = vim.api.nvim_get_current_buf() }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
 end
@@ -38,7 +40,7 @@ function M.get_recent_keys(windowMilliseconds)
   local config = Config.get()
   local runtimeState = State.get()
 
-  local keys = {}
+  local recentKeys = {}
   local cutoff = Utils.now_ms() - windowMilliseconds
 
   local itemCount = runtimeState.keyRingLength
@@ -51,13 +53,13 @@ function M.get_recent_keys(windowMilliseconds)
     end
     local item = runtimeState.keyRingBuffer[idx]
     if item and item.t >= cutoff then
-      table.insert(keys, 1, item.k)
+      table.insert(recentKeys, 1, item.k)
     else
       break
     end
   end
 
-  return keys
+  return recentKeys
 end
 
 -- TODO: NEED TO TEST with kickstart-nvim and bare bones nvim before removimg testing code below
@@ -109,7 +111,7 @@ function M.install_if_needed()
     end
     -- local readable = vim.fn.keytrans(key)
     if readable:find('^<t') then
-      -- return
+      return
     end
     if key:find('^<t') and typed ~= ' ' then
       -- return
@@ -118,6 +120,10 @@ function M.install_if_needed()
       readable:find('<LeftDrag>')
       or readable:find('<LeftRelease>')
       or readable:find('<LeftMouse>')
+      or readable:find('<RightMouse>')
+      or readable:find('<RightDrag>')
+      or readable:find('<RightRelease>')
+      or readable:find('<MouseMove>')
     then
       return
     end
@@ -127,11 +133,11 @@ function M.install_if_needed()
     if readable:find('<Space>') and readable ~= '<Space>' then
       return
     end
-
+    -- vim.notify(readable)
     -- FIX: IF SAME ts exists in keyring then return (exclude)
 
-    -- ring_push(key)
-    ring_push('key: ' .. key .. ' typed: ' .. typed .. ' readable: ' .. readable)
+    ring_push(readable)
+    -- ring_push('key: ' .. key .. ' typed: ' .. typed .. ' readable: ' .. readable)
   end, runtimeState.namespace)
 end
 

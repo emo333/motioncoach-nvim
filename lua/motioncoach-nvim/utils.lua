@@ -47,6 +47,12 @@ function M.detect_last_operator_range()
   local startPos = vim.fn.getpos("'[")
   -- local startPos = vim.fn.getpos("'^")
   local endPos = vim.fn.getpos("']")
+  vim.notify(
+    vim.inspect(startPos)
+      .. ' : '
+      .. vim.inspect(endPos)
+      .. ' -- from Utils.detect_last_operator_range'
+  )
   if not startPos or not endPos then
     return nil
   end
