@@ -283,6 +283,10 @@ local function on_cursor_moved()
     '<ScrollWheelDown>',
   }
 
+  if config.coachingLevel >= 2 then
+    excludeKeys = {}
+  end
+
   currentMode = vim.api.nvim_get_mode().mode
   local match = Keylog.has_exclude_match(excludeKeys)
   if match then

@@ -47,12 +47,12 @@ function M.detect_last_operator_range()
   local startPos = vim.fn.getpos("'[")
   -- local startPos = vim.fn.getpos("'^")
   local endPos = vim.fn.getpos("']")
-  -- vim.notify(
-  --   vim.inspect(startPos)
-  --     .. ' : '
-  --     .. vim.inspect(endPos)
-  --     .. ' -- from Utils.detect_last_operator_range'
-  -- )
+  vim.notify(
+    vim.inspect(startPos)
+      .. ' : '
+      .. vim.inspect(endPos)
+      .. ' -- from Utils.detect_last_operator_range'
+  )
   if not startPos or not endPos then
     return nil
   end
@@ -62,6 +62,8 @@ function M.detect_last_operator_range()
   -- vim.fn.getjumplist() gets jummplist as a {} with each jump as a sub table
   -- local jumps, last_idx = unpack(vim.fn.getjumplist())
   -- print('vim.inspect(jumps): ' .. vim.inspect(jumps))
+
+  -- sdlfkgjhal sdf ghasdf;g a sdfg af
 
   return {
     bufferNumber = startPos[1],

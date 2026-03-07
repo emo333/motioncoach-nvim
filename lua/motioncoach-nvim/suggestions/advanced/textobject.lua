@@ -36,7 +36,10 @@ function M.text_object_suggestion(keys, get_line)
     )
   )
 
+  -- some tto {sal}
+
   local keyString = Utils.build_key_string(keys)
+  vim.notify(keyString)
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
   local usedVisual = (keyString:find(' v ') or keyString:find(' V ') or keyString:find('<C%-v>'))
@@ -73,6 +76,12 @@ function M.text_object_suggestion(keys, get_line)
     local b = Utils.clampNumber(operatorRange.endCol + 1, 1, #lineText)
     if b < a then
       a, b = b, a
+    end
+    if a > 1 then
+      a = a - 2
+    end
+    if b < #lineText - 1 then
+      b = b + 2
     end
     local segment = lineText:sub(a, b)
 
