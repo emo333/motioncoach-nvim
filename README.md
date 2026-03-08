@@ -1,5 +1,5 @@
 <!-- markdownlint-disable-file -->
-# `motioncoach-nvim` <img width="70" height="70" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" /> 
+# `motioncoach-nvim` <img width="70" height="70" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" />
 
 `motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques **"WHEN YOU NEED THEM"**
 
@@ -81,8 +81,6 @@ use "emo333/motioncoach.nvim"
 vim.pack.add({
   'https://github.com/emo333/motioncoach-nvim',
 })
--- after add()
-plugin1 = require('motioncoach-nvim')
 ```
 
 ---
