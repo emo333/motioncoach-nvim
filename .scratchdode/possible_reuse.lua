@@ -1,3 +1,4 @@
+-- nvim --headless -c "PlenaryBustedDirectory spec/" 2>&1 | tee test-log.txt
 
 --  TODO: may not need these functions in this module... only need it if we going to send Homie his keystrokes.
 --

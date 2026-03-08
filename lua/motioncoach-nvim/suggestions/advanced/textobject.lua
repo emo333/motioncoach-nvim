@@ -36,7 +36,7 @@ function M.text_object_suggestion(keys, get_line)
     )
   )
 
-  -- some tto {sal}
+  -- some tto {sal} "jsdhf"  ( asf = ) function () { [9] }
 
   local keyString = Utils.build_key_string(keys)
   vim.notify(keyString)

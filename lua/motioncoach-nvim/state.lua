@@ -32,6 +32,9 @@ function M.init()
 end
 
 function M.get_or_create_per_buffer(bufferNumber)
+  if not vim.api.nvim_buf_is_valid(bufferNumber) then
+    return
+  end
   if vim.bo[bufferNumber].bh ~= '' then --vim.bo.bh == '' then
     return
   end
