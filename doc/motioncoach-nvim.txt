@@ -1,4 +1,4 @@
-*motioncoach-nvim.txt*        For NVIM v0.8.0       Last change: 2026 March 07
+*motioncoach-nvim.txt*        For NVIM v0.8.0       Last change: 2026 March 08
 
 ==============================================================================
 Table of Contents                         *motioncoach-nvim-table-of-contents*
