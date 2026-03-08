@@ -99,8 +99,6 @@ VIM.PACK (NEOVIM VERSION 12+ ONLY) ~
     vim.pack.add({
       'https://github.com/emo333/motioncoach-nvim',
     })
-    -- after add()
-    plugin1 = require('motioncoach-nvim')
 <
 
 ------------------------------------------------------------------------------
