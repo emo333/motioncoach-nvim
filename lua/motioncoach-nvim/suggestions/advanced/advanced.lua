@@ -19,6 +19,8 @@ local Treesitter = require('motioncoach-nvim.suggestions.advanced.treesitter')
 local VimRegister = require('motioncoach-nvim.suggestions.advanced.vimregister')
 local Yanks = require('motioncoach-nvim.suggestions.advanced.yanks')
 
+-- TODO: suggest using `f`/`F` (maybe this is where a plugin check is done to see if Homie has flash.nvim installed and only if so, suggest using `s`+{a-Z0-9})
+
 -- INFO: THE MAIN FUNCTION OF ADVANCED MODE COACHING SUGGESTIONS
 --
 ---@param episode {}

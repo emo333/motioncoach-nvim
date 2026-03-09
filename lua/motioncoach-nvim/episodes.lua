@@ -255,36 +255,40 @@ local function on_cursor_moved()
     return
   end
 
-  local excludeKeys = {
-    '\27',
-    'w',
-    'W',
-    'b',
-    'B',
-    'e',
-    'E',
-    'o',
-    'f',
-    'q',
-    '0',
-    '$',
-    'g',
-    'G',
-    '\4', --??
-    '\21', -- ??
-    '\18', -- ??
-    '^[', -- <Esc>
-    '<C-u>',
-    '<80><fc>\\4D',
-    '\4D',
-    '<80><fc>K', -- ScrollWheelUp
-    '<80><fc>L', -- ScrollWheelDown
-    '<ScrollWheelUp>',
-    '<ScrollWheelDown>',
-  }
-
-  if config.coachingLevel >= 2 then
-    excludeKeys = {}
+  local excludeKeys = {}
+  if config.coachingLevel == 1 then
+    excludeKeys = {
+      '\27',
+      'w',
+      'W',
+      'b',
+      'B',
+      'e',
+      'E',
+      'o',
+      'f',
+      'q',
+      '0',
+      '$',
+      'g',
+      'G',
+      '\4', --??
+      '\21', -- ??
+      '\18', -- ??
+      '^[', -- <Esc>
+      '<C-u>',
+      '<80><fc>\\4D',
+      '\4D',
+      '<80><fc>K', -- ScrollWheelUp
+      '<80><fc>L', -- ScrollWheelDown
+      '<ScrollWheelUp>',
+      '<ScrollWheelDown>',
+    }
+  elseif config.coachingLevel >= 2 then
+    excludeKeys = {
+      '<ScrollWheelUp>',
+      '<ScrollWheelDown>',
+    }
   end
 
   currentMode = vim.api.nvim_get_mode().mode

@@ -7,7 +7,7 @@
 ---@class Beginner
 local M = {}
 
--- local Config = require('motioncoach-nvim.config')
+local Config = require('motioncoach-nvim.config')
 local Keylog = require('motioncoach-nvim.keylog')
 
 ---@param lineText string
@@ -30,6 +30,7 @@ function M.suggest(episode, context)
   local lineDelta = to.row - from.row
   local colDelta = to.col - from.col
   local absLineDelta, absColDelta = math.abs(lineDelta), math.abs(colDelta)
+  local longMsg = Config.get().longSuggestMessages
 
   -------------------- HORIZONTAL MOTIONS
 
@@ -38,7 +39,18 @@ function M.suggest(episode, context)
   if absLineDelta == 0 then
     if to.col == 0 then
       if not Keylog.key_exists_in_keyring(nil, '0') then
-        return 'Try ` 0 ` to jump to start of line'
+        if longMsg then
+          return [[
+    --Horizontal Jump--
+
+    to jump to beginning of line:
+
+    ` 0 ` first column of current line
+    ` ^ ` first NON-Blank character of current line
+          ]]
+        else
+          return 'Try ` 0 ` to jump to start of line'
+        end
       end
     end
 
@@ -54,8 +66,27 @@ function M.suggest(episode, context)
 
   -- TODO: make user configurable 7
   if absLineDelta == 0 and absColDelta >= 7 then
+    if longMsg then
+      return [[
+    --Horizontal Jump--
+
+    For long horizontal moves:
+
+    ` w ` to next word
+    ` W ` to next word (ignoring special characters)
+
+    ` e ` to END of next word
+    ` E ` to END of next word (ignoring special characters)
+
+    ` b ` backwards to next word
+    ` B ` backwards to next word (ignoring special characters)
+
+    can prefix a "count" to any of the above ( eg. ` 16w ` )
+          ]]
+    else
+      return 'Try ` 0 ` to jump to start of line'
+    end
     return 'For long horizontal moves, you can move by words with:\n ` w ` or ` b ` or ` e `\n ( ` W ` or ` B ` or ` E `\n  Or Can prefix count (` 8h ` or ` 16l `)'
-    -- TODO: for advanvced mode suggest using `f`/`F` (maybe this is where a plugin check is done to see if Homie has flash.nvim installed and only if so, suggest using `s`+{a-Z0-9})
   end
 
   -------------------- VERTICAL MOTIONS
