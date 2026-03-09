@@ -68,9 +68,7 @@ function M.suggest(episode, context)
   if absLineDelta == 0 and absColDelta >= 7 then
     if longMsg then
       return [[
-    --Horizontal Jump--
-
-    For long horizontal moves:
+    For long horizontal motions:
 
     ` w ` to next word
     ` W ` to next word (ignoring special characters)
@@ -84,9 +82,8 @@ function M.suggest(episode, context)
     can prefix a "count" to any of the above ( eg. ` 16w ` )
           ]]
     else
-      return 'Try ` 0 ` to jump to start of line'
+      return 'For long horizontal moves:\n ` w ` or ` b ` or ` e `\n ( ` W ` or ` B ` or ` E `\n  Or Can prefix count (` 8h ` or ` 16l `)'
     end
-    return 'For long horizontal moves, you can move by words with:\n ` w ` or ` b ` or ` e `\n ( ` W ` or ` B ` or ` E `\n  Or Can prefix count (` 8h ` or ` 16l `)'
   end
 
   -------------------- VERTICAL MOTIONS
@@ -102,8 +99,6 @@ function M.suggest(episode, context)
       return ('Consider using %s'):format(which)
     end
   end
-
-  -- vim.notify(vim.inspect(recentKeys))
 
   -- TODO: make user configurable 6 and 60
   if absLineDelta >= 6 and absLineDelta < 60 then
@@ -127,15 +122,13 @@ function M.suggest(episode, context)
   if absLineDelta >= 200 then
     local which = (lineDelta > 0) and '` / ` (search downward)' or '` ? ` (search upward)'
 
-    return ('Huge move: consider %s for your target text'):format(which)
+    return ('Huge Vertical Motion: consider %s for your target text'):format(which)
   end
 
   if absLineDelta >= vim.api.nvim_win_get_height(0) then
-    -- FIX: if last keys{from keylogger} were NOT '<C-d>' or '<C-u>'
-    -- NOTE: possibly handle this by finalizing episode on detection of '<C-d>' or '<C-u>'
     local scroll = (lineDelta > 0) and ' <C-d> ' or ' <C-u> '
 
-    return ('Big move: try `%s` to scroll'):format(scroll)
+    return ('Paging Motion: try `%s` to scroll'):format(scroll)
   end
 
   return nil
