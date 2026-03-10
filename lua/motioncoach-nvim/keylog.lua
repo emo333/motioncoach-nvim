@@ -25,10 +25,26 @@ local function ring_push(token)
   local timestamp = Utils.now_ms()
   local writeIndex = runtimeState.keyRingHeadIndex
   local c = vim.api.nvim_win_get_cursor(0)
-  local cursorPos = { row = c[1], col = c[2] }
+  local cursorPos = { row = c[1], col = c[2] + 1 }
+
+  if token == 'd' or token == 'D' then
+    local curBufNr = vim.fn.bufnr()
+    local perBufferState = State.get_or_create_per_buffer(curBufNr)
+    if not perBufferState then
+      return
+    end
+    perBufferState.lastLineOperatedOn.lineBeforeOperation = vim.api.nvim_buf_get_lines(
+      curBufNr,
+      cursorPos.row - 1,
+      cursorPos.row,
+      false
+    )[1] or ''
+    perBufferState.lastLineOperatedOn.rowNumber = cursorPos.row
+    perBufferState.lastLineOperatedOn.cursorCol = cursorPos.col
+  end
 
   runtimeState.keyRingBuffer[writeIndex] =
-    { t = timestamp, k = token, c = c, bufnr = vim.api.nvim_get_current_buf() }
+    { t = timestamp, k = token, c = cursorPos, bufnr = vim.api.nvim_get_current_buf() }
   runtimeState.keyRingHeadIndex = (writeIndex % config.keyRingBufferSize) + 1
   runtimeState.keyRingLength = math.min(config.keyRingBufferSize, runtimeState.keyRingLength + 1)
 end
@@ -62,9 +78,7 @@ function M.get_recent_keys(windowMilliseconds)
   return recentKeys
 end
 
--- TODO: NEED TO TEST with kickstart-nvim and bare bones nvim before removimg testing code below
-
--- Hook in the Keylogger
+-- Hook in the Keylogger to Episode
 function M.install_if_needed()
   local runtimeState = State.get()
   if runtimeState.onKeyHookInstalled then
@@ -78,7 +92,6 @@ function M.install_if_needed()
     if vim.bo.bh ~= '' then
       return
     end
-    -- vim.notify(vim.fn.keytrans(typed))
     local ctrl_u = vim.api.nvim_replace_termcodes('<C-u>', true, true, true)
     local ctrl_d = vim.api.nvim_replace_termcodes('<C-d>', true, true, true)
     local scrollwheelup = vim.api.nvim_replace_termcodes('<ScrollwheelUp>', true, true, true)

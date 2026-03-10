@@ -11,7 +11,7 @@ local Utils = require('motioncoach-nvim.utils')
 local Config = require('motioncoach-nvim.config')
 
 --  detection:
---    1. Homie deletes a char, word, or block(chunk)
+--    1. Homie deletes a char, word, or block(chunk
 --      a. Did Homie paste in deleted row/col?
 --  suggestion: {word} "Yo Homie, you can use 'diw'(think: [d]elete [i]nside [w]ord) to delete the word your cursor within on regardless where your cursor is within the word"
 --  suggestion: {block} "Yo Homie, you can use 'di' + " or [ or { or ( ---think: [d]elete [i]nside "quotes or [braces or {brackets or (parenthesis--- to delete the block your cursor is within regardless where your cursor is within the block"
@@ -36,7 +36,7 @@ function M.text_object_suggestion(keys, get_line)
     )
   )
 
-  -- some tto {sal} "jsdhf"  ( asf = ) function () { [9] }
+  -- some tto {} "js"  ( = ) () { [9] }
 
   local keyString = Utils.build_key_string(keys)
   vim.notify(keyString)
@@ -78,15 +78,15 @@ function M.text_object_suggestion(keys, get_line)
       a, b = b, a
     end
     if a > 1 then
-      a = a - 2
+      a = a - 1
     end
     if b < #lineText - 1 then
-      b = b + 2
+      b = b + 1
     end
     local segment = lineText:sub(a, b)
 
     -- NOTE: WORDS ciw diw yiw caw daw yaw
-    if segment:match('^%w[%w_]*$') then
+    if segment:match('^%w[%w_]*$') then -- does segment contain a string with no spaces or special characters (_ is not a special char)
       if longMsg then
         return [[
     --Text Object--

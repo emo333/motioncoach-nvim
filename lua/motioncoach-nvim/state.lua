@@ -18,15 +18,33 @@ local runtimeState = {
   keyRingHeadIndex = 1,
   keyRingLength = 0,
   currentEpisode = nil,
-  perBufferStateByBufferNumber = {},
+  perBufferStateByBufferNumber = {
+    [1] = {
+      lastUndoSequenceNumber = nil,
+      yankRing = {},
+      yankRingMaxItems = 20,
+      evidenceCounters = {
+        surroundLikeEvidenceCount = 0,
+        yankHuntingEvidenceCount = 0,
+        jumpBacktrackingEvidenceCount = 0,
+        textObjectNeedEvidenceCount = 0,
+        treesitterMotionEvidenceCount = 0,
+      },
+      lastLineOperatedOn = {
+        rowNumber = 0,
+        cursorCol = 0,
+        lineBeforeOperation = '',
+      },
+      hotspotVisitCountsByPositionKey = {},
+    },
+  },
 }
 
 function M.get()
   return runtimeState
 end
-
---- does nothing
----@deprecated
+-- klaj
+--- does nothing, do not use
 function M.init()
   -- didn't need this but leaving it here in case have a need later
 end
@@ -54,7 +72,11 @@ function M.get_or_create_per_buffer(bufferNumber)
       textObjectNeedEvidenceCount = 0,
       treesitterMotionEvidenceCount = 0,
     },
-
+    lastLineOperatedOn = {
+      rowNumber = 0,
+      cursorCol = 0,
+      lineBeforeOperation = '',
+    },
     hotspotVisitCountsByPositionKey = {},
   }
 
