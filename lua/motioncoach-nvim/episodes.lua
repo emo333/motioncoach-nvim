@@ -170,17 +170,11 @@ end
 
 -- 💩
 local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
-  --
-  -- TEST: Get info for the current window
-  -- vim.notify(vim.inspect(vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]))
-  -- TEST: Get info for the current buffer
-  -- local current_buffer_info = vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]
-  -- vim.notify(vim.inspect(vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1]))
-
   if vim.bo[bufferNumber].bh ~= '' then
     return
   end
 
+  vim.notify('start episode AFTER buffer type check')
   local runtimeState = State.get()
   runtimeState.currentEpisode = {
     bufferNumber = bufferNumber,

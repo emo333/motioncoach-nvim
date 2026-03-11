@@ -23,23 +23,24 @@ local Config = require('motioncoach-nvim.config')
 --
 ---@param keys {}
 ---@param get_line function
-function M.text_object_suggestion(keys, get_line)
+function M.text_object_suggestion(keys, get_line, perBufferState)
   local operatorRange = Utils.detect_last_operator_range()
+
   if not operatorRange then
     return nil
   end
 
   -- TEST:
-  vim.notify(
-    vim.inspect(
-      'stCOL: ' .. operatorRange.startCol .. ' to endCOL: ' .. vim.inspect(operatorRange.endCol)
-    )
-  )
+  -- vim.notify(
+  --   vim.inspect(
+  --     'stCOL: ' .. operatorRange.startCol .. ' to endCOL: ' .. vim.inspect(operatorRange.endCol)
+  --   )
+  -- )
 
-  -- some tto {} "js"  ( = ) () { [9] }
+  -- some tto hh() "js" )lkjh alskdhf kkk) { [9] }
 
   local keyString = Utils.build_key_string(keys)
-  vim.notify(keyString)
+  -- vim.notify(keyString)
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
   local usedVisual = (keyString:find(' v ') or keyString:find(' V ') or keyString:find('<C%-v>'))
@@ -71,20 +72,24 @@ function M.text_object_suggestion(keys, get_line)
   local longMsg = Config.get().longSuggestMessages
 
   if operatorRange.startRow == operatorRange.endRow then
-    local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
-    local a = Utils.clampNumber(operatorRange.startCol + 1, 1, #lineText)
-    local b = Utils.clampNumber(operatorRange.endCol + 1, 1, #lineText)
-    if b < a then
-      a, b = b, a
-    end
-    if a > 1 then
-      a = a - 1
-    end
-    if b < #lineText - 1 then
-      b = b + 1
-    end
-    local segment = lineText:sub(a, b)
+    -- local lineText = get_line(operatorRange.bufferNumber, operatorRange.startRow)
+    -- local a = Utils.clampNumber(operatorRange.startCol + 1, 1, #lineText)
+    -- local b = Utils.clampNumber(operatorRange.endCol + 1, 1, #lineText)
+    -- if b < a then
+    --   a, b = b, a
+    -- end
+    -- if a > 1 then
+    --   a = a - 1
+    -- end
+    -- if b < #lineText - 1 then
+    --   b = b + 1
+    -- end
 
+    -- local segment = lineText:sub(a, b)
+    vim.print('segment = ' .. vim.inspect(perBufferState.yankRing[1].text))
+    local segment = perBufferState.yankRing[1].text
+
+    -- ldskfj a sldkjf asdl  l skdfjh ) kalsjdhf (jdhfjh)  askdfkkk  hhhhj sk
     -- NOTE: WORDS ciw diw yiw caw daw yaw
     if segment:match('^%w[%w_]*$') then -- does segment contain a string with no spaces or special characters (_ is not a special char)
       if longMsg then

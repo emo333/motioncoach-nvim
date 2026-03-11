@@ -37,7 +37,7 @@ function M.suggest(episode, context)
     return sugg1, recentKeys
   end
 
-  local sugg2 = TextObject.text_object_suggestion(recentKeys, context.get_line)
+  local sugg2 = TextObject.text_object_suggestion(recentKeys, context.get_line, perBufferState)
   if sugg2 then
     perBufferState.evidenceCounters.textObjectNeedEvidenceCount = perBufferState.evidenceCounters.textObjectNeedEvidenceCount
       + 1
