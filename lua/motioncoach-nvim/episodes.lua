@@ -168,13 +168,11 @@ local function finalize_episode()
   end
 end
 
--- 💩
 local function start_episode(bufferNumber, cursorPos, currentTimeMs, modeString)
   if vim.bo[bufferNumber].bh ~= '' then
     return
   end
 
-  vim.notify('start episode AFTER buffer type check')
   local runtimeState = State.get()
   runtimeState.currentEpisode = {
     bufferNumber = bufferNumber,

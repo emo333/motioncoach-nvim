@@ -16,6 +16,7 @@ local Plugins = require('motioncoach-nvim.suggestions.plugins')
 local Surround = require('motioncoach-nvim.suggestions.advanced.surround')
 local TextObject = require('motioncoach-nvim.suggestions.advanced.textobject')
 local Treesitter = require('motioncoach-nvim.suggestions.advanced.treesitter')
+local Utils = require('motioncoach-nvim.utils')
 local VimRegister = require('motioncoach-nvim.suggestions.advanced.vimregister')
 local Yanks = require('motioncoach-nvim.suggestions.advanced.yanks')
 
@@ -30,7 +31,14 @@ function M.suggest(episode, context)
   local config = Config.get()
   local runtimeState = context.runtimeState
   local perBufferState = context.perBufferState
-  local recentKeys = Keylog.get_recent_keys(config.keyPatternWindowMilliseconds)
+
+  -- Filter recent keys to roughly the current episode's window (plus gap to catch command keys like 'd' in 'dw')
+  local episodeDuration = Utils.now_ms() - episode.timeFromMs
+  local lookbackWindow = episodeDuration + config.episodeGapMilliseconds
+  -- Ensure we don't look back further than the configured max window
+  lookbackWindow = math.min(lookbackWindow, config.keyPatternWindowMilliseconds)
+
+  local recentKeys = Keylog.get_recent_keys(lookbackWindow)
 
   local sugg1 = CountCompression.count_compression(recentKeys)
   if sugg1 then

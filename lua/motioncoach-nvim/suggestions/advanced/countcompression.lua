@@ -11,27 +11,37 @@ local M = {}
 --  suggestion: Yo Homie use a count with your movements!
 --
 function M.count_compression(keys)
+  local config = require('motioncoach-nvim.config').get()
+  local limit = config.countCompressionThreshold or 5
+
   local allowed = { j = true, k = true, h = true, l = true, w = true, b = true, e = true }
-  local lastToken, repeatCount = nil, 0
+  
+  local currentToken, currentCount = nil, 0
+  local maxToken, maxCount = nil, 0
 
   for _, token in ipairs(keys) do
     if allowed[token] then
-      if token == lastToken then
-        repeatCount = repeatCount + 1
+      if token == currentToken then
+        currentCount = currentCount + 1
       else
-        lastToken, repeatCount = token, 1
+        currentToken, currentCount = token, 1
       end
     else
-      lastToken, repeatCount = nil, 0
+      currentToken, currentCount = nil, 0
+    end
+
+    if currentCount > maxCount then
+      maxCount = currentCount
+      maxToken = currentToken
     end
   end
 
-  if lastToken and repeatCount >= 10 then
+  if maxToken and maxCount >= limit then
     return ('You pressed ` %s ` %d times. Try ` %d%s ` (count + motion).'):format(
-      lastToken,
-      repeatCount,
-      repeatCount,
-      lastToken
+      maxToken,
+      maxCount,
+      maxCount,
+      maxToken
     )
   end
 

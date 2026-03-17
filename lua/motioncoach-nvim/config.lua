@@ -34,6 +34,15 @@ local defaultConfig = {
   --- The time within that a "patern" of keys will be analyzed
   --- default 2000ms
   keyPatternWindowMilliseconds = 5000,
+  --- The threshold for count compression suggestion (how many repeated keys trigger a suggestion)
+  --- default 5
+  countCompressionThreshold = 5,
+  --- The minimum vertical distance traveled to consider a Jump List suggestion
+  --- default 40
+  jumpListDistanceThreshold = 40,
+  --- The number of small motions (j, k) used to travel that distance to trigger a suggestion
+  --- default 10
+  jumpListSmallMotionThreshold = 10,
   --- Capture command keys (eg. i a p o x d c r y u ...) -- If this is true, a lot more Advanced suggestions are enabled
   --- default false
   captureCommandLineKeys = false,

@@ -13,10 +13,10 @@ local Utils = require('motioncoach-nvim.utils')
 --  suggestion:
 --
 function M.jumplist_suggestion(episode, keys, perBufferState)
+  local config = require('motioncoach-nvim.config').get()
   local traveled = math.abs(episode.to.row - episode.from.row)
-  -- + math.abs(episode.to.col - episode.from.col)  --<-- col travel relevent??
-  -- TODO: add 40 to Config
-  if traveled < 40 then
+  
+  if traveled < (config.jumpListDistanceThreshold or 40) then
     return nil
   end
 
@@ -25,15 +25,26 @@ function M.jumplist_suggestion(episode, keys, perBufferState)
     or keyString:find('<C%-i>')
     or keyString:find(' `` ')
     or keyString:find(" '' ")
+  
   if usedJumpKeys then
     return nil
   end
 
-  -- NOTE: increment count for buffer of times Homie has been given this suggestion.  This will be used for 'Plugin Recomendations'
-  perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount = perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount
-    + 1
+  -- Check for inefficient movement (e.g. mostly single-line motions)
+  local small_motions = 0
+  for _, k in ipairs(keys) do
+    if k == 'j' or k == 'k' then small_motions = small_motions + 1 end
+  end
 
-  return ' --JUMPLIST SUGGESTION--\n\n ` <C-o> ` backward | ` <C-i> ` forward | ` `` ` toggle'
+  if small_motions > (config.jumpListSmallMotionThreshold or 10) then
+    -- NOTE: increment count for buffer of times Homie has been given this suggestion.
+    perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount = perBufferState.evidenceCounters.jumpBacktrackingEvidenceCount
+      + 1
+      
+    return 'Long distance traveled with repetitive motions.\nTry ` <C-u> ` / ` <C-d> ` or ` G ` / ` gg `\nor use Jump List: ` <C-o> ` / ` <C-i> `'
+  end
+
+  return nil
 end
 
 return M

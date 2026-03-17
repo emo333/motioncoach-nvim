@@ -30,17 +30,8 @@ function M.text_object_suggestion(keys, get_line, perBufferState)
     return nil
   end
 
-  -- TEST:
-  -- vim.notify(
-  --   vim.inspect(
-  --     'stCOL: ' .. operatorRange.startCol .. ' to endCOL: ' .. vim.inspect(operatorRange.endCol)
-  --   )
-  -- )
-
-  -- some tto hh() "js" )lkjh alskdhf kkk) { [9] }
-
   local keyString = Utils.build_key_string(keys)
-  -- vim.notify(keyString)
+  
   local usedOperator = (keyString:find(' d ') or keyString:find(' c ') or keyString:find(' y '))
     ~= nil
   local usedVisual = (keyString:find(' v ') or keyString:find(' V ') or keyString:find('<C%-v>'))
@@ -86,7 +77,6 @@ function M.text_object_suggestion(keys, get_line, perBufferState)
     -- end
 
     -- local segment = lineText:sub(a, b)
-    vim.print('segment = ' .. vim.inspect(perBufferState.yankRing[1].text))
     local segment = perBufferState.yankRing[1].text
 
     -- ldskfj a sldkjf asdl  l skdfjh ) kalsjdhf (jdhfjh)  askdfkkk  hhhhj sk
