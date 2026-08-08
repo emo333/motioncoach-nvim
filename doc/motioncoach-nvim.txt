@@ -1,4 +1,5 @@
-*motioncoach-nvim.txt*        For NVIM v0.8.0       Last change: 2026 March 17
+*motioncoach-nvim.txt*
+                                For NVIM v0.8.0    Last change: 2026 August 08
 
 ==============================================================================
 Table of Contents                         *motioncoach-nvim-table-of-contents*
@@ -14,7 +15,6 @@ Table of Contents                         *motioncoach-nvim-table-of-contents*
   - Provider Hook { FUTURE FEATURE}|motioncoach-nvim-motioncoach-nvim--provider-hook-{-future-feature}|
   - About the Author (emo333)|motioncoach-nvim-motioncoach-nvim--about-the-author-(emo333)|
   - Contributions           |motioncoach-nvim-motioncoach-nvim--contributions|
-  - License                       |motioncoach-nvim-motioncoach-nvim--license|
 
 ==============================================================================
 1. motioncoach-nvim                       *motioncoach-nvim-motioncoach-nvim-*
@@ -53,13 +53,21 @@ BEGINNER COACHING (LEVEL 1) ~
 
 ADVANCED COACHING (LEVEL 2) ~
 
-Some Advanced Suggestions: - Key pattern analysis (via `vim.on_key`) -
-State-diff validation (cursor movement, operators, undo) - Text object
-suggestions: - `ciw`, `di"`, `ci(`, `dap`, etc. - Register coaching: - `"_d`,
-`"0p`, `"+y`, `"+p` - Marks & jumplist coaching: - `ma`, `'a`, ``a` - `<C-o>` /
-`<C-i>` - Yank history capture (local, in-memory) - Delimiter / surround
-coaching - Optional Treesitter textobject hints - Configurable plugin
-recommendations
+Some Advanced Suggestions:
+
+- Key pattern analysis (via `vim.on_key`)
+- State-diff validation (cursor movement, operators, undo)
+- Text object suggestions:
+    - `ciw`, `di"`, `ci(`, `dap`, etc.
+- Register coaching:
+    - `"_d`, `"0p`, `"+y`, `"+p`
+- Marks & jumplist coaching:
+    - `ma`, `'a`, ``a`
+    - `<C-o>` / `<C-i>`
+- Yank history capture (local, in-memory)
+- Delimiter / surround coaching
+- Optional Treesitter textobject hints
+- Configurable plugin recommendations
 
 ------------------------------------------------------------------------------
 
@@ -304,12 +312,6 @@ ABOUT THE AUTHOR (EMO333)*motioncoach-nvim-motioncoach-nvim--about-the-author-(e
 CONTRIBUTIONS               *motioncoach-nvim-motioncoach-nvim--contributions*
 
 Hell yeah! Bring em!
-
-------------------------------------------------------------------------------
-
-LICENSE                           *motioncoach-nvim-motioncoach-nvim--license*
-
-MIT(ch) <– I crack me up ;)
 
 ------------------------------------------------------------------------------
 
