@@ -1,4 +1,5 @@
 <!-- markdownlint-disable-file -->
+
 # `motioncoach-nvim` <img width="70" height="70" alt="motioncoach" src="https://github.com/user-attachments/assets/e47fad19-fce4-4178-9fa2-be0c9577242f" />
 
 `motioncoach-nvim` is a Neovim plugin that watches your navigation and editing **episodes** and suggests more efficient Vim motions and techniques **"WHEN YOU NEED THEM"**
@@ -34,6 +35,7 @@ It is designed as a _coach_, not a tutor. Suggestions are:
 ### Advanced Coaching (Level 2)
 
 Some Advanced Suggestions:
+
 - Key pattern analysis (via `vim.on_key`)
 - State-diff validation (cursor movement, operators, undo)
 - Text object suggestions:
@@ -70,11 +72,13 @@ Some Advanced Suggestions:
   end
 }
 ```
+
 ### packer.nvim
 
 ```lua
 use "emo333/motioncoach.nvim"
 ```
+
 ### vim.pack (Neovim version 12+ only)
 
 ```lua
@@ -202,7 +206,6 @@ require("motioncoach-nvim").setup({
 
 ❌ Never sends data
 
-
 ### Yank History (Advanced Only)
 
 `motioncoach-nvim` captures yank events via `TextYankPost` and stores them in a per-buffer yank ring.
@@ -286,11 +289,5 @@ require("motioncoach-nvim").setup({
 ## Contributions
 
 Hell yeah! Bring em!
-
----
-
-## License
-
-MIT(ch) <-- I crack me up ;)
 
 ---
